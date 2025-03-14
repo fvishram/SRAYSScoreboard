@@ -1,4 +1,4 @@
-﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
+﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ namespace SRAYSScoreboard
     /// This class parses the incoming data stream according to the Venus ERTD scoreboard protocol
     /// and extracts relevant information such as event names, running times, and swimmer results.
     /// </summary>
-    internal class AresDataHandler
+    public class AresDataHandler
     {
         // Control characters used in the Venus ERTD protocol
         /// <summary>Start of Header character (ASCII 0x01)</summary>
