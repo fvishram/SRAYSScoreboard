@@ -2,8 +2,6 @@
 
 A Windows application that displays real-time swimming competition data from the Omega ARES 21 timing system. This scoreboard display is optimized for a ten-lane pool and provides a clean, easy-to-read interface for spectators and officials.
 
-![SRAYSScoreboard Screenshot](https://github.com/fvishram/SRAYSScoreboard/raw/main/screenshots/scoreboard.png)
-
 ## Overview
 
 SRAYSScoreboard was developed by Silver Rays Swim Club to provide a simple, reliable way to display swimming competition data from the Omega ARES 21 timing system. The application connects to the timing system via a serial port and displays:
@@ -13,6 +11,22 @@ SRAYSScoreboard was developed by Silver Rays Swim Club to provide a simple, reli
 - Swimmer names
 - Finishing places
 - Swimmer times
+
+```mermaid
+flowchart LR
+    A[ARES 21\nTiming System] -->|RS-485 Protocol| B[Custom DB9 Cable]
+    B --> C[PC Serial Port]
+    C --> D[SRAYSScoreboard\nApplication]
+    D --> E[Main Display\nScoreboard]
+    D --> F[OBS Interface\nfor Streaming]
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#33f,stroke-width:2px
+    style C fill:#bfb,stroke:#3a3,stroke-width:2px
+    style D fill:#fbb,stroke:#a33,stroke-width:2px
+    style E fill:#bfb,stroke:#3a3,stroke-width:2px
+    style F fill:#bbf,stroke:#33f,stroke-width:2px
+```
 
 The application is designed to be displayed on a secondary monitor or projector for spectators to view during swim meets. It also includes a dedicated interface for Open Broadcaster Software (OBS) integration, allowing for easy streaming of competition data.
 
@@ -43,8 +57,25 @@ Alternatively, you can build the application from source:
 Before using SRAYSScoreboard, you must configure your Omega ARES 21 timing system:
 
 1. Set the ARES system to output in Venus ERTD scoreboard format
-2. Connect the ARES system to your computer using a serial cable (typically RS-232)
-   - Note: If your computer doesn't have a serial port, you may need a USB-to-Serial adapter
+2. Connect the ARES system to your computer using a custom serial cable with RS-485 protocol
+   - Note: If your computer doesn't have a serial port, you will need a USB 2.0 to RS-485 adapter (not a standard USB-to-Serial adapter)
+   - A custom DB9 cable with different pinouts on each end is required:
+     
+     **PC Side (DB9 Female):**
+     | DB9 Pin | Function      |
+     |---------|---------------|
+     | 1       | T(+) / RS-485 B(+) |
+     | 2       | T(-) / RS-485 A(-) |
+     | 5       | Ground        |
+     | 3,4,6,7,8,9 | Not connected |
+     
+     **ARES Timing Console Side (DB9 Male):**
+     | DB9 Pin | Function      |
+     |---------|---------------|
+     | 3       | T(-) / RS-485 A(-) |
+     | 4       | T(+) / RS-485 B(+) |
+     | 7       | Ground        |
+     | 1,2,5,6,8,9 | Not connected |
 
 ### Application Setup
 

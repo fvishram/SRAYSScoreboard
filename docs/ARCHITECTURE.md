@@ -6,30 +6,30 @@ This document provides a technical overview of the SRAYSScoreboard application a
 
 SRAYSScoreboard consists of several key components that work together:
 
+```mermaid
+flowchart LR
+    A[Serial Port Connection\nRS-485] --> B[AresDataHandler\nData Parser]
+    B --> C[Scoreboard\nMain UI]
+    C --> D[OBSScoreboard\nStreaming UI]
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#33f,stroke-width:2px
+    style C fill:#bfb,stroke:#3a3,stroke-width:2px
+    style D fill:#fbb,stroke:#a33,stroke-width:2px
 ```
-┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
-│  Serial Port    │──────▶ AresDataHandler │──────▶   Scoreboard    │
-│  Connection     │      │  (Data Parser)  │      │   (Main UI)     │
-└─────────────────┘      └─────────────────┘      └─────────────────┘
-                                                          │
-                                                          │
-                                                          ▼
-                                                  ┌─────────────────┐
-                                                  │ OBSScoreboard   │
-                                                  │ (Streaming UI)  │
-                                                  └─────────────────┘
-```
+
+The diagram above shows the data flow between the main components of the application.
 
 ### Main Components
 
-1. **Serial Port Connection**: Handles communication with the Omega ARES 21 timing system
+1. **Serial Port Connection**: Handles communication with the Omega ARES 21 timing system using the RS-485 protocol (requires a USB 2.0 to RS-485 adapter if no native serial port is available)
 2. **AresDataHandler**: Processes and parses the data received from the timing system
 3. **Scoreboard Form**: The main user interface that displays the scoreboard data
 4. **OBSScoreboard Form**: A secondary interface optimized for streaming with OBS
 
 ## Data Flow
 
-1. The Omega ARES 21 timing system sends data via a serial connection
+1. The Omega ARES 21 timing system sends data via a serial connection using the RS-485 protocol
 2. The application receives this data through the SerialPort component
 3. The `serialPort_DataReceived` event handler is triggered when data arrives
 4. The received data is passed to the AresDataHandler for processing

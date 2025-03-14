@@ -4,6 +4,24 @@ This document provides solutions for common issues you might encounter when usin
 
 ## Connection Issues
 
+```mermaid
+flowchart LR
+    A[ARES 21\nTiming System] -->|RS-485 Data| B[Custom DB9 Cable]
+    B -->|Serial Data| C[PC Serial Port\nor USB Adapter]
+    C -->|Data Stream| D[SRAYSScoreboard\nApplication]
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#33f,stroke-width:2px
+    style C fill:#bfb,stroke:#3a3,stroke-width:2px
+    style D fill:#fbb,stroke:#a33,stroke-width:2px
+    
+    X1[Potential Issue:\nIncorrect Cable Wiring] -.-> B
+    X2[Potential Issue:\nWrong COM Port] -.-> C
+    X3[Potential Issue:\nTiming System Not\nConfigured Correctly] -.-> A
+```
+
+The diagram above shows the data flow from the timing system to the application and potential points of failure.
+
 ### No Connection to Timing System
 
 **Symptoms:**
@@ -14,8 +32,28 @@ This document provides solutions for common issues you might encounter when usin
 **Solutions:**
 1. **Check Physical Connection**
    - Ensure the serial cable is securely connected to both the computer and the timing system
-   - If using a USB-to-Serial adapter, try a different USB port
+   - Verify you are using the correct custom DB9 cable with RS-485 protocol (not RS-232)
+   
+     **PC Side (DB9 Female):**
+     | DB9 Pin | Function      |
+     |---------|---------------|
+     | 1       | T(+) / RS-485 B(+) |
+     | 2       | T(-) / RS-485 A(-) |
+     | 5       | Ground        |
+     | 3,4,6,7,8,9 | Not connected |
+     
+     **ARES Timing Console Side (DB9 Male):**
+     | DB9 Pin | Function      |
+     |---------|---------------|
+     | 3       | T(-) / RS-485 A(-) |
+     | 4       | T(+) / RS-485 B(+) |
+     | 7       | Ground        |
+     | 1,2,5,6,8,9 | Not connected |
+   
+   - If using a USB adapter, ensure it is a USB 2.0 to RS-485 adapter (standard USB-to-Serial adapters that only support RS-232 will not work)
+   - Try a different USB port if connection issues persist
    - Try a different serial cable if available
+   - Check for any damaged pins in the DB9 connectors on both ends
 
 2. **Verify COM Port Settings**
    - Right-click on the scoreboard and select "COM Port" > "Refresh List"

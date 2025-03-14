@@ -4,7 +4,63 @@ This document provides a detailed overview of the Venus ERTD protocol used by th
 
 ## Protocol Overview
 
-The Venus ERTD (Extended Real-Time Data) protocol is used by Omega timing systems to transmit real-time swimming competition data to external display systems. SRAYSScoreboard connects to the timing system via a serial port and interprets this data to display it in a user-friendly format.
+The Venus ERTD (Extended Real-Time Data) protocol is used by Omega timing systems to transmit real-time swimming competition data to external display systems. SRAYSScoreboard connects to the timing system via a serial port using the RS-485 protocol and interprets this data to display it in a user-friendly format.
+
+### Physical Connection
+
+The Omega ARES 21 timing system uses RS-485 (not RS-232) for data transmission. A custom DB9 cable with different pinouts on each end is required:
+
+**PC Side (DB9 Female):**
+| DB9 Pin | Function      |
+|---------|---------------|
+| 1       | T(+) / RS-485 B(+) |
+| 2       | T(-) / RS-485 A(-) |
+| 5       | Ground        |
+| 3,4,6,7,8,9 | Not connected |
+
+**ARES Timing Console Side (DB9 Male):**
+| DB9 Pin | Function      |
+|---------|---------------|
+| 3       | T(-) / RS-485 A(-) |
+| 4       | T(+) / RS-485 B(+) |
+| 7       | Ground        |
+| 1,2,5,6,8,9 | Not connected |
+
+Note that the cable must be wired to connect T(+) to T(+) and T(-) to T(-), with the appropriate pins on each end. The cable must be custom-made or modified from a standard cable to match this pinout.
+
+#### Cable Wiring Diagram
+
+```mermaid
+graph LR
+    subgraph "PC Side (DB9 Female)"
+        PC1[Pin 1: T+/RS-485 B+]
+        PC2[Pin 2: T-/RS-485 A-]
+        PC5[Pin 5: Ground]
+    end
+    
+    subgraph "ARES Console Side (DB9 Male)"
+        ARES3[Pin 3: T-/RS-485 A-]
+        ARES4[Pin 4: T+/RS-485 B+]
+        ARES7[Pin 7: Ground]
+    end
+    
+    PC1 -->|Connect| ARES4
+    PC2 -->|Connect| ARES3
+    PC5 -->|Connect| ARES7
+    
+    style PC1 fill:#bbf,stroke:#33f,stroke-width:2px
+    style PC2 fill:#fbb,stroke:#f33,stroke-width:2px
+    style PC5 fill:#bbb,stroke:#333,stroke-width:2px
+    style ARES3 fill:#fbb,stroke:#f33,stroke-width:2px
+    style ARES4 fill:#bbf,stroke:#33f,stroke-width:2px
+    style ARES7 fill:#bbb,stroke:#333,stroke-width:2px
+```
+
+This diagram shows how to wire the custom cable between the PC and the ARES timing console. Note that the T+ (blue) connects to T+ and T- (red) connects to T-, but they are on different pins on each end of the cable.
+
+The default baud rate for the connection is 9600, with 8 data bits, no parity, and 1 stop bit (9600 8N1).
+
+**Important Note:** If your computer doesn't have a native serial port, you must use a USB 2.0 to RS-485 adapter. Standard USB-to-Serial adapters that only support RS-232 will not work with this protocol.
 
 ## Control Characters
 

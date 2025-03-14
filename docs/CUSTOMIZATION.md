@@ -2,6 +2,33 @@
 
 This document provides detailed information on how to customize the appearance and behavior of the SRAYSScoreboard application.
 
+```mermaid
+mindmap
+  root((SRAYSScoreboard<br>Customization))
+    Color Options
+      Background Color
+      Text Colors
+        Global Text Color
+        Header Labels
+        Column Headers
+        Name Labels
+        Time Labels
+        Place Labels
+        Lane Labels
+      Reset to Default
+    COM Port Settings
+      Context Menu Selection
+      Settings Dialog
+    OBS Integration
+      Window Capture
+      Color Keying
+    Advanced
+      Font Customization
+      Layout Modification
+```
+
+The diagram above shows the various customization options available in SRAYSScoreboard.
+
 ## Color Customization
 
 SRAYSScoreboard offers extensive color customization options through its context menu. Right-click anywhere on the scoreboard to access these options.
@@ -125,6 +152,26 @@ If your color settings aren't being saved between sessions:
 
 If you're having trouble connecting to the timing system:
 - Verify that the COM port is correctly installed and recognized by Windows
+- Ensure you are using the correct custom DB9 cable with RS-485 protocol (not RS-232)
+  
+  **PC Side (DB9 Female):**
+  | DB9 Pin | Function      |
+  |---------|---------------|
+  | 1       | T(+) / RS-485 B(+) |
+  | 2       | T(-) / RS-485 A(-) |
+  | 5       | Ground        |
+  | 3,4,6,7,8,9 | Not connected |
+  
+  **ARES Timing Console Side (DB9 Male):**
+  | DB9 Pin | Function      |
+  |---------|---------------|
+  | 3       | T(-) / RS-485 A(-) |
+  | 4       | T(+) / RS-485 B(+) |
+  | 7       | Ground        |
+  | 1,2,5,6,8,9 | Not connected |
+
 - Check that no other application is using the same COM port
 - Ensure the timing system is properly configured to output in Venus ERTD format
-- Try using a different USB port if you're using a USB-to-Serial adapter
+- If using a USB adapter, ensure it is specifically a USB 2.0 to RS-485 adapter (standard USB-to-Serial adapters that only support RS-232 will not work)
+- Try using a different USB port if connection issues persist
+- If making your own cable, ensure the wiring connects T(+) to T(+) and T(-) to T(-) between the two ends
