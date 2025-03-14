@@ -1,7 +1,32 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+﻿﻿<?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
   <Profiles>
     <Profile Name="(Default)" />
   </Profiles>
-  <Settings />
+  <Settings>
+    <Setting Name="BackgroundColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Black</Value>
+    </Setting>
+    <Setting Name="TextColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">HotTrack</Value>
+    </Setting>
+    <Setting Name="HeaderLabelsColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">HotTrack</Value>
+    </Setting>
+    <Setting Name="ColumnHeadersColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">HotTrack</Value>
+    </Setting>
+    <Setting Name="NameLabelsColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">LightSteelBlue</Value>
+    </Setting>
+    <Setting Name="TimeLabelsColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">LightSteelBlue</Value>
+    </Setting>
+    <Setting Name="PlaceLabelsColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">LightSteelBlue</Value>
+    </Setting>
+    <Setting Name="LaneLabelsColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">LightSteelBlue</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
