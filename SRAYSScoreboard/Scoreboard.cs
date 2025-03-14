@@ -41,6 +41,19 @@ namespace SRAYSScoreboard
         /// <summary>Handler for processing data from the timing system</summary>
         private AresDataHandler scoreboardData = new AresDataHandler();
         
+        /// <summary>Reference to the OBS scoreboard form</summary>
+        private OBSScoreboard obsScoreboard;
+        
+        /// <summary>
+        /// Sets the reference to the OBS scoreboard form.
+        /// This allows the main form to update the OBS form when settings change.
+        /// </summary>
+        /// <param name="obsForm">The OBS scoreboard form</param>
+        public void SetOBSScoreboard(OBSScoreboard obsForm)
+        {
+            obsScoreboard = obsForm;
+        }
+        
         /// <summary>
         /// Gets the data handler used by this scoreboard.
         /// This allows other forms to access the same data.
@@ -73,6 +86,9 @@ namespace SRAYSScoreboard
             
             // Initialize the COM port submenu
             InitializeComPortMenu();
+            
+            // Apply the pool configuration based on saved settings
+            UpdatePoolLaneVisibility(Properties.Settings.Default.PoolLaneCount);
         }
         
         /// <summary>
@@ -445,6 +461,9 @@ namespace SRAYSScoreboard
             
             // Initialize the Colors menu
             InitializeColorsMenu();
+            
+            // Initialize the Pool Configuration menu
+            InitializePoolConfigMenu();
             
             // Load saved color settings
             LoadColorSettings();
@@ -878,6 +897,123 @@ namespace SRAYSScoreboard
             Properties.Settings.Default.PlaceLabelsColor = dataColor;
             Properties.Settings.Default.LaneLabelsColor = dataColor;
             Properties.Settings.Default.Save();
+        }
+        
+        /// <summary>
+        /// Initializes the Pool Configuration submenu in the context menu.
+        /// </summary>
+        private void InitializePoolConfigMenu()
+        {
+            // Create a submenu for Pool Configuration
+            ToolStripMenuItem poolConfigMenu = new ToolStripMenuItem("Pool Configuration");
+            
+            // Add 8-lane option
+            ToolStripMenuItem lanes8Item = new ToolStripMenuItem("8 Lanes");
+            lanes8Item.Click += PoolConfigMenuItem_Click;
+            lanes8Item.Tag = 8;
+            poolConfigMenu.DropDownItems.Add(lanes8Item);
+            
+            // Add 10-lane option
+            ToolStripMenuItem lanes10Item = new ToolStripMenuItem("10 Lanes");
+            lanes10Item.Click += PoolConfigMenuItem_Click;
+            lanes10Item.Tag = 10;
+            poolConfigMenu.DropDownItems.Add(lanes10Item);
+            
+            // Check the current configuration
+            int currentLaneCount = Properties.Settings.Default.PoolLaneCount;
+            foreach (ToolStripMenuItem item in poolConfigMenu.DropDownItems)
+            {
+                if ((int)item.Tag == currentLaneCount)
+                {
+                    item.Checked = true;
+                }
+            }
+            
+            // Insert the Pool Configuration menu between Colors and Exit
+            contextMenuSettings.Items.Insert(3, poolConfigMenu);
+        }
+        
+        /// <summary>
+        /// Handles the Pool Configuration menu item click event.
+        /// </summary>
+        /// <param name="sender">The source of the event</param>
+        /// <param name="e">Event data</param>
+        private void PoolConfigMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem clickedItem = (ToolStripMenuItem)sender;
+            int laneCount = (int)clickedItem.Tag;
+            
+            // Update the lane visibility
+            UpdatePoolLaneVisibility(laneCount);
+            
+            // Save the setting
+            Properties.Settings.Default.PoolLaneCount = laneCount;
+            Properties.Settings.Default.Save();
+            
+            // Update the checked state of all pool config menu items
+            ToolStripMenuItem poolConfigMenu = (ToolStripMenuItem)contextMenuSettings.Items[3];
+            foreach (ToolStripMenuItem item in poolConfigMenu.DropDownItems)
+            {
+                item.Checked = ((int)item.Tag == laneCount);
+            }
+            
+            // Update the OBS scoreboard if it exists
+            if (obsScoreboard != null)
+            {
+                obsScoreboard.UpdatePoolLaneVisibility(laneCount);
+            }
+        }
+        
+        /// <summary>
+        /// Updates the visibility of lanes based on the selected pool configuration.
+        /// </summary>
+        /// <param name="laneCount">The number of lanes to display (8 or 10)</param>
+        private void UpdatePoolLaneVisibility(int laneCount)
+        {
+            // Ensure lane count is valid
+            if (laneCount != 8 && laneCount != 10)
+            {
+                laneCount = 10; // Default to 10 lanes
+            }
+            
+            // Update visibility of lanes 9 and 10
+            bool showLanes9And10 = (laneCount == 10);
+            
+            // Lane 9 controls
+            Control[] lane9Controls = new Control[] {
+                nameLabels[8], timeLabels[8], placeLabels[8]
+            };
+            
+            // Lane 10 controls
+            Control[] lane10Controls = new Control[] {
+                nameLabels[9], timeLabels[9], placeLabels[9]
+            };
+            
+            // Lane number labels
+            Control[] lane9LabelControls = this.tableLayoutPanel1.Controls.Find("label13", true);
+            Control[] lane10LabelControls = this.tableLayoutPanel1.Controls.Find("label14", true);
+            
+            // Update visibility
+            foreach (Control control in lane9Controls)
+            {
+                control.Visible = showLanes9And10;
+            }
+            
+            foreach (Control control in lane10Controls)
+            {
+                control.Visible = showLanes9And10;
+            }
+            
+            // Update lane number label visibility
+            if (lane9LabelControls.Length > 0)
+            {
+                lane9LabelControls[0].Visible = showLanes9And10;
+            }
+            
+            if (lane10LabelControls.Length > 0)
+            {
+                lane10LabelControls[0].Visible = showLanes9And10;
+            }
         }
     }
 }

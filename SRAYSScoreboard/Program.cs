@@ -66,6 +66,9 @@ namespace SRAYSScoreboard
             obsScoreboard.Size = new System.Drawing.Size(960, 540);
             obsScoreboard.TopMost = false;
             
+            // Set the OBS scoreboard reference in the main scoreboard
+            mainScoreboard.SetOBSScoreboard(obsScoreboard);
+            
             // Show the OBS scoreboard window
             obsScoreboard.Show();
             

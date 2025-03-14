@@ -107,6 +107,9 @@ namespace SRAYSScoreboard
         {
             // Load saved color settings
             LoadColorSettings();
+            
+            // Apply the pool configuration based on saved settings
+            UpdatePoolLaneVisibility(Properties.Settings.Default.PoolLaneCount);
         }
 
         /// <summary>
@@ -292,6 +295,58 @@ namespace SRAYSScoreboard
                 {
                     ((Label)controls[0]).ForeColor = color;
                 }
+            }
+        }
+        
+        /// <summary>
+        /// Updates the visibility of lanes based on the selected pool configuration.
+        /// </summary>
+        /// <param name="laneCount">The number of lanes to display (8 or 10)</param>
+        public void UpdatePoolLaneVisibility(int laneCount)
+        {
+            // Ensure lane count is valid
+            if (laneCount != 8 && laneCount != 10)
+            {
+                laneCount = 10; // Default to 10 lanes
+            }
+            
+            // Update visibility of lanes 9 and 10
+            bool showLanes9And10 = (laneCount == 10);
+            
+            // Lane 9 controls
+            Control[] lane9Controls = new Control[] {
+                nameLabels[8], timeLabels[8], placeLabels[8]
+            };
+            
+            // Lane 10 controls
+            Control[] lane10Controls = new Control[] {
+                nameLabels[9], timeLabels[9], placeLabels[9]
+            };
+            
+            // Lane number labels
+            Control[] lane9LabelControls = this.tableLayoutPanel1.Controls.Find("label13", true);
+            Control[] lane10LabelControls = this.tableLayoutPanel1.Controls.Find("label14", true);
+            
+            // Update visibility
+            foreach (Control control in lane9Controls)
+            {
+                control.Visible = showLanes9And10;
+            }
+            
+            foreach (Control control in lane10Controls)
+            {
+                control.Visible = showLanes9And10;
+            }
+            
+            // Update lane number label visibility
+            if (lane9LabelControls.Length > 0)
+            {
+                lane9LabelControls[0].Visible = showLanes9And10;
+            }
+            
+            if (lane10LabelControls.Length > 0)
+            {
+                lane10LabelControls[0].Visible = showLanes9And10;
             }
         }
     }

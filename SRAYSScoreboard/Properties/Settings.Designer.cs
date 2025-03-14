@@ -146,5 +146,20 @@ namespace SRAYSScoreboard.Properties
                 this["LaneLabelsColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int PoolLaneCount
+        {
+            get
+            {
+                return ((int)(this["PoolLaneCount"]));
+            }
+            set
+            {
+                this["PoolLaneCount"] = value;
+            }
+        }
     }
 }

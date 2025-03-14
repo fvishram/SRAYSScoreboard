@@ -28,5 +28,8 @@
     <Setting Name="LaneLabelsColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">LightSteelBlue</Value>
     </Setting>
+    <Setting Name="PoolLaneCount" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
