@@ -99,6 +99,7 @@ A tabbed dialog form that:
   - Place labels color
   - Lane labels color
 - Enables configuration of pool lanes (8 or 10)
+- Provides option to switch between standard lane numbering (1-10) and alternative lane numbering (0-9)
 
 Key methods:
 - `LoadSettings()`: Loads saved settings from application properties
@@ -120,6 +121,7 @@ The application uses the .NET Settings framework to persist user preferences:
 - COM port settings
 - Color customization options (background, text, and individual element colors)
 - Pool lane configuration (8 or 10 lanes)
+- Lane numbering configuration (1-10 or 0-9)
 - Window positions and sizes
 
 Settings are managed through both:

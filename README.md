@@ -148,6 +148,7 @@ Before using SRAYSScoreboard, you must configure your Omega ARES 21 timing syste
   - Place labels color
   - Lane labels color
 - Pool configuration options (8 or 10 lanes)
+- Lane numbering options (1-10 or 0-9)
 - Easy COM port selection with dropdown list and refresh option
 - COM5 automatically recommended as the default timing system port
 - Dedicated OBS interface for live streaming with automatic updates

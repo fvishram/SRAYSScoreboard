@@ -23,6 +23,9 @@ mindmap
       Pool Configuration
         8 Lanes
         10 Lanes
+        Lane Numbering
+          1-10 (Standard)
+          0-9 (Alternative)
     Context Menu
       COM Port Selection
       Colors
@@ -66,9 +69,12 @@ Customize the colors of various scoreboard elements:
 - Reset Colors - Resets all colors to their default values
 
 ### Pool Configuration Tab
-Configure the number of lanes displayed on the scoreboard:
+Configure the number of lanes displayed on the scoreboard and lane numbering:
 - 8 Lanes - Displays lanes 1-8 only
 - 10 Lanes - Displays all 10 lanes
+- Lane Numbering - Choose between standard (1-10) or alternative (0-9) lane numbering:
+  - Standard (1-10) - Traditional lane numbering from 1 to 10
+  - Alternative (0-9) - Zero-based lane numbering from 0 to 9, which may be required for certain competitions or timing systems
 
 ## Context Menu Customization
 
@@ -108,11 +114,12 @@ You can change the COM port used to connect to the timing system through the con
 
 ### Pool Configuration
 
-You can change the number of lanes displayed on the scoreboard through the context menu:
+You can change the number of lanes displayed on the scoreboard and lane numbering through the context menu:
 
 1. Right-click on the scoreboard
 2. Select "Pool Configuration"
-3. Choose either "8 Lanes" or "10 Lanes"
+3. Choose either "8 Lanes" or "10 Lanes" to set the number of visible lanes
+4. Select "Lane Numbering" and choose either "Standard (1-10)" or "Alternative (0-9)" to set the lane numbering style
 
 ## OBS Integration
 

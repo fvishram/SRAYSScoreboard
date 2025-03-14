@@ -88,6 +88,11 @@ namespace SRAYSScoreboard
         public int PoolLaneCount { get; private set; }
 
         /// <summary>
+        /// Gets or sets whether to use lane numbering 0-9 instead of 1-10.
+        /// </summary>
+        public bool UseLaneNumberingZeroToNine { get; private set; }
+
+        /// <summary>
         /// Reference to the main scoreboard form.
         /// </summary>
         private Scoreboard mainScoreboard;
@@ -137,6 +142,10 @@ namespace SRAYSScoreboard
             {
                 radioButton10Lanes.Checked = true;
             }
+
+            // Load lane numbering setting
+            UseLaneNumberingZeroToNine = Properties.Settings.Default.UseLaneNumberingZeroToNine;
+            checkBoxZeroToNine.Checked = UseLaneNumberingZeroToNine;
         }
 
         /// <summary>
@@ -239,6 +248,10 @@ namespace SRAYSScoreboard
             // Save the pool lane count setting
             PoolLaneCount = radioButton8Lanes.Checked ? 8 : 10;
             Properties.Settings.Default.PoolLaneCount = PoolLaneCount;
+            
+            // Save the lane numbering setting
+            UseLaneNumberingZeroToNine = checkBoxZeroToNine.Checked;
+            Properties.Settings.Default.UseLaneNumberingZeroToNine = UseLaneNumberingZeroToNine;
 
             // Save all settings
             Properties.Settings.Default.Save();
@@ -545,6 +558,19 @@ namespace SRAYSScoreboard
                 // Auto-apply the change to all scoreboards
                 ApplyChangesToScoreboards();
             }
+        }
+
+        /// <summary>
+        /// Handles the checkbox change for lane numbering configuration.
+        /// </summary>
+        private void checkBoxZeroToNine_CheckedChanged(object sender, EventArgs e)
+        {
+            // Update the lane numbering setting
+            UseLaneNumberingZeroToNine = checkBoxZeroToNine.Checked;
+            Properties.Settings.Default.UseLaneNumberingZeroToNine = UseLaneNumberingZeroToNine;
+            
+            // Auto-apply the change to all scoreboards
+            ApplyChangesToScoreboards();
         }
     }
 }

@@ -84,6 +84,9 @@ namespace SRAYSScoreboard
         
         /// <summary>Collection of labels for displaying swimmer places</summary>
         private List<Label> placeLabels = new List<Label>();
+        
+        /// <summary>Flag indicating whether to use lane numbering 0-9 instead of 1-10</summary>
+        private bool useLaneNumberingZeroToNine = false;
         /// <summary>
         /// Initializes a new instance of the Scoreboard form.
         /// </summary>
@@ -218,6 +221,10 @@ namespace SRAYSScoreboard
                 // Apply pool configuration
                 UpdatePoolLaneVisibility(formSettings.PoolLaneCount);
                 
+                // Apply lane numbering setting
+                useLaneNumberingZeroToNine = formSettings.UseLaneNumberingZeroToNine;
+                UpdateLaneNumbering();
+                
                 // Update the OBS scoreboard if it exists
                 if (obsScoreboard != null)
                 {
@@ -234,6 +241,9 @@ namespace SRAYSScoreboard
                     
                     // Update pool lane visibility
                     obsScoreboard.UpdatePoolLaneVisibility(formSettings.PoolLaneCount);
+                    
+                    // Update lane numbering
+                    obsScoreboard.UpdateLaneNumbering(formSettings.UseLaneNumberingZeroToNine);
                 }
             }
             catch (Exception ex)
@@ -296,6 +306,10 @@ namespace SRAYSScoreboard
             
             // Load saved color settings
             LoadColorSettings();
+            
+            // Load lane numbering setting
+            useLaneNumberingZeroToNine = Properties.Settings.Default.UseLaneNumberingZeroToNine;
+            UpdateLaneNumbering();
         }
         
         /// <summary>
@@ -536,6 +550,48 @@ namespace SRAYSScoreboard
             }
         }
 
+        
+        /// <summary>
+        /// Updates the lane number labels based on the lane numbering setting.
+        /// </summary>
+        private void UpdateLaneNumbering()
+        {
+            try
+            {
+                // Update lane number labels based on the setting
+                for (int i = 5; i <= 14; i++)
+                {
+                    Control[] controls = this.tableLayoutPanel1.Controls.Find("label" + i, true);
+                    if (controls.Length > 0 && controls[0] is Label)
+                    {
+                        Label laneLabel = (Label)controls[0];
+                        int laneNumber = i - 4; // Convert from label index to lane number
+                        
+                        if (useLaneNumberingZeroToNine)
+                        {
+                            // Use 0-9 numbering
+                            laneLabel.Text = (laneNumber - 1).ToString();
+                        }
+                        else
+                        {
+                            // Use 1-10 numbering
+                            laneLabel.Text = laneNumber.ToString();
+                        }
+                    }
+                }
+                
+                // Update the OBS scoreboard if it exists
+                if (obsScoreboard != null)
+                {
+                    obsScoreboard.UpdateLaneNumbering(useLaneNumberingZeroToNine);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error but continue
+                Console.WriteLine($"Error updating lane numbering: {ex.Message}");
+            }
+        }
         
         /// <summary>
         /// Updates the visibility of lanes based on the selected pool configuration.

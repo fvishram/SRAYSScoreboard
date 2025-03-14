@@ -176,5 +176,20 @@ namespace SRAYSScoreboard.Properties
                 this["PoolLaneCount"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseLaneNumberingZeroToNine
+        {
+            get
+            {
+                return ((bool)(this["UseLaneNumberingZeroToNine"]));
+            }
+            set
+            {
+                this["UseLaneNumberingZeroToNine"] = value;
+            }
+        }
     }
 }

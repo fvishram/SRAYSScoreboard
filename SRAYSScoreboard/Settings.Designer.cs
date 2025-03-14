@@ -148,6 +148,8 @@ namespace SRAYSScoreboard
             this.tabPageColors.UseVisualStyleBackColor = true;
             
             // tabPagePoolConfig
+            this.tabPagePoolConfig.Controls.Add(this.checkBoxZeroToNine);
+            this.tabPagePoolConfig.Controls.Add(this.labelLaneNumbering);
             this.tabPagePoolConfig.Controls.Add(this.radioButton10Lanes);
             this.tabPagePoolConfig.Controls.Add(this.radioButton8Lanes);
             this.tabPagePoolConfig.Controls.Add(this.labelPoolLanes);
@@ -318,6 +320,23 @@ namespace SRAYSScoreboard
             this.radioButton10Lanes.UseVisualStyleBackColor = true;
             this.radioButton10Lanes.CheckedChanged += new System.EventHandler(this.radioButton10Lanes_CheckedChanged);
             
+            // Lane numbering option
+            this.labelLaneNumbering.AutoSize = true;
+            this.labelLaneNumbering.Location = new System.Drawing.Point(14, 70);
+            this.labelLaneNumbering.Name = "labelLaneNumbering";
+            this.labelLaneNumbering.Size = new System.Drawing.Size(94, 13);
+            this.labelLaneNumbering.TabIndex = 3;
+            this.labelLaneNumbering.Text = "Lane Numbering:";
+            
+            this.checkBoxZeroToNine.AutoSize = true;
+            this.checkBoxZeroToNine.Location = new System.Drawing.Point(109, 69);
+            this.checkBoxZeroToNine.Name = "checkBoxZeroToNine";
+            this.checkBoxZeroToNine.Size = new System.Drawing.Size(151, 17);
+            this.checkBoxZeroToNine.TabIndex = 4;
+            this.checkBoxZeroToNine.Text = "Use 0-9 instead of 1-10";
+            this.checkBoxZeroToNine.UseVisualStyleBackColor = true;
+            this.checkBoxZeroToNine.CheckedChanged += new System.EventHandler(this.checkBoxZeroToNine_CheckedChanged);
+            
             // Color labels
             this.labelTimeLabelsColor.AutoSize = true;
             this.labelTimeLabelsColor.Location = new System.Drawing.Point(14, 163);
@@ -415,5 +434,7 @@ namespace SRAYSScoreboard
         private System.Windows.Forms.RadioButton radioButton8Lanes;
         private System.Windows.Forms.RadioButton radioButton10Lanes;
         private System.Windows.Forms.ColorDialog colorDialog;
+        private System.Windows.Forms.CheckBox checkBoxZeroToNine;
+        private System.Windows.Forms.Label labelLaneNumbering;
     }
 }

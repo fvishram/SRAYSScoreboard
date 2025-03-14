@@ -47,6 +47,9 @@ namespace SRAYSScoreboard
         
         /// <summary>Collection of labels for displaying swimmer places</summary>
         private List<Label> placeLabels = new List<Label>();
+        
+        /// <summary>Flag indicating whether to use lane numbering 0-9 instead of 1-10</summary>
+        private bool useLaneNumberingZeroToNine = false;
 
         /// <summary>
         /// Initializes a new instance of the OBSScoreboard form.
@@ -110,6 +113,10 @@ namespace SRAYSScoreboard
             
             // Apply the pool configuration based on saved settings
             UpdatePoolLaneVisibility(Properties.Settings.Default.PoolLaneCount);
+            
+            // Load and apply lane numbering setting
+            useLaneNumberingZeroToNine = Properties.Settings.Default.UseLaneNumberingZeroToNine;
+            UpdateLaneNumbering(useLaneNumberingZeroToNine);
         }
 
         /// <summary>
@@ -331,6 +338,46 @@ namespace SRAYSScoreboard
             ApplyTimeLabelsColor(timeLabelsColor);
             ApplyPlaceLabelsColor(placeLabelsColor);
             ApplyLaneLabelsColor(laneLabelsColor);
+        }
+        
+        /// <summary>
+        /// Updates the lane number labels based on the lane numbering setting.
+        /// </summary>
+        /// <param name="useZeroToNine">Whether to use lane numbering 0-9 instead of 1-10</param>
+        public void UpdateLaneNumbering(bool useZeroToNine)
+        {
+            try
+            {
+                // Store the setting
+                useLaneNumberingZeroToNine = useZeroToNine;
+                
+                // Update lane number labels based on the setting
+                for (int i = 5; i <= 14; i++)
+                {
+                    Control[] controls = this.tableLayoutPanel1.Controls.Find("label" + i, true);
+                    if (controls.Length > 0 && controls[0] is Label)
+                    {
+                        Label laneLabel = (Label)controls[0];
+                        int laneNumber = i - 4; // Convert from label index to lane number
+                        
+                        if (useLaneNumberingZeroToNine)
+                        {
+                            // Use 0-9 numbering
+                            laneLabel.Text = (laneNumber - 1).ToString();
+                        }
+                        else
+                        {
+                            // Use 1-10 numbering
+                            laneLabel.Text = laneNumber.ToString();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error but continue
+                Console.WriteLine($"Error updating lane numbering: {ex.Message}");
+            }
         }
         
         /// <summary>
