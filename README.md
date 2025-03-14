@@ -14,7 +14,7 @@ SRAYSScoreboard was developed by Silver Rays Swim Club to provide a simple, reli
 - Finishing places
 - Swimmer times
 
-The application is designed to be displayed on a secondary monitor or projector for spectators to view during swim meets.
+The application is designed to be displayed on a secondary monitor or projector for spectators to view during swim meets. It also includes a dedicated interface for Open Broadcaster Software (OBS) integration, allowing for easy streaming of competition data.
 
 ## System Requirements
 
@@ -60,24 +60,25 @@ Before using SRAYSScoreboard, you must configure your Omega ARES 21 timing syste
 3. The display will update in real-time as events progress
 4. To exit the application, click on "File" > "Exit" in the menu bar
 
+## Features
+
+- Real-time display of swimming competition data
+- Support for 10-lane pool configurations
+- Customizable colors for all display elements
+- Easy COM port selection through context menu
+- Dedicated OBS interface for live streaming
+- Automatic saving and loading of user preferences
+- Comprehensive error handling and connection management
+
 ## Troubleshooting
 
-### No Data Displayed
+For common issues and their solutions, please see the [Troubleshooting Guide](docs/TROUBLESHOOTING.md).
 
-If the scoreboard is not displaying any data:
+For more detailed information about specific aspects of the application, refer to:
 
-1. Check that the COM port setting matches the port your timing system is connected to
-2. Verify that the ARES system is set to Venus ERTD scoreboard output
-3. Ensure the serial cable is securely connected
-4. Restart the application and/or the timing system
-
-### Incorrect Data Display
-
-If the data is not displaying correctly:
-
-1. Check that the ARES system is configured properly
-2. Ensure that the timing system is sending data in the expected format
-3. Restart the application
+- [Protocol Documentation](docs/PROTOCOL.md) - Details about the Venus ERTD protocol
+- [Customization Guide](docs/CUSTOMIZATION.md) - How to customize the appearance and behavior
+- [Architecture Overview](docs/ARCHITECTURE.md) - Technical details about the application structure
 
 ## Development
 
