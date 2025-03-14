@@ -1,4 +1,4 @@
-﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
+﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -77,6 +77,8 @@ namespace SRAYSScoreboard
             this.labelPoolLanes = new System.Windows.Forms.Label();
             this.radioButton8Lanes = new System.Windows.Forms.RadioButton();
             this.radioButton10Lanes = new System.Windows.Forms.RadioButton();
+            this.labelLaneNumbering = new System.Windows.Forms.Label();
+            this.checkBoxZeroToNine = new System.Windows.Forms.CheckBox();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.colorDialog.AnyColor = true;
             this.colorDialog.FullOpen = true;
