@@ -1,4 +1,4 @@
-﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
+﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -78,6 +78,197 @@ namespace SRAYSScoreboard
             this.radioButton8Lanes = new System.Windows.Forms.RadioButton();
             this.radioButton10Lanes = new System.Windows.Forms.RadioButton();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
+            this.colorDialog.AnyColor = true;
+            this.colorDialog.FullOpen = true;
+            // buttonOK
+            this.buttonOK.Location = new System.Drawing.Point(223, 289);
+            this.buttonOK.Name = "buttonOK";
+            this.buttonOK.Size = new System.Drawing.Size(75, 23);
+            this.buttonOK.TabIndex = 0;
+            this.buttonOK.Text = "OK";
+            this.buttonOK.UseVisualStyleBackColor = true;
+            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            
+            // buttonCancel
+            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.buttonCancel.Location = new System.Drawing.Point(304, 289);
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+            this.buttonCancel.TabIndex = 1;
+            this.buttonCancel.Text = "Cancel";
+            this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            
+            // tabControl
+            this.tabControl.Controls.Add(this.tabPageConnection);
+            this.tabControl.Controls.Add(this.tabPageColors);
+            this.tabControl.Controls.Add(this.tabPagePoolConfig);
+            this.tabControl.Location = new System.Drawing.Point(12, 12);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(367, 271);
+            this.tabControl.TabIndex = 2;
+            
+            // tabPageConnection
+            this.tabPageConnection.Controls.Add(this.buttonRefreshPorts);
+            this.tabPageConnection.Controls.Add(this.comboBoxCOMPort);
+            this.tabPageConnection.Controls.Add(this.labelCOMPort);
+            this.tabPageConnection.Location = new System.Drawing.Point(4, 22);
+            this.tabPageConnection.Name = "tabPageConnection";
+            this.tabPageConnection.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageConnection.Size = new System.Drawing.Size(359, 245);
+            this.tabPageConnection.TabIndex = 0;
+            this.tabPageConnection.Text = "Connection";
+            this.tabPageConnection.UseVisualStyleBackColor = true;
+            
+            // tabPageColors
+            this.tabPageColors.Controls.Add(this.buttonLaneLabelsColor);
+            this.tabPageColors.Controls.Add(this.buttonPlaceLabelsColor);
+            this.tabPageColors.Controls.Add(this.buttonTimeLabelsColor);
+            this.tabPageColors.Controls.Add(this.buttonNameLabelsColor);
+            this.tabPageColors.Controls.Add(this.buttonColumnHeadersColor);
+            this.tabPageColors.Controls.Add(this.buttonHeaderLabelsColor);
+            this.tabPageColors.Controls.Add(this.buttonTextColor);
+            this.tabPageColors.Controls.Add(this.buttonBackgroundColor);
+            this.tabPageColors.Controls.Add(this.buttonResetColors);
+            this.tabPageColors.Controls.Add(this.labelLaneLabelsColor);
+            this.tabPageColors.Controls.Add(this.labelPlaceLabelsColor);
+            this.tabPageColors.Controls.Add(this.labelTimeLabelsColor);
+            this.tabPageColors.Controls.Add(this.labelNameLabelsColor);
+            this.tabPageColors.Controls.Add(this.labelColumnHeadersColor);
+            this.tabPageColors.Controls.Add(this.labelHeaderLabelsColor);
+            this.tabPageColors.Controls.Add(this.labelTextColor);
+            this.tabPageColors.Controls.Add(this.labelBackgroundColor);
+            this.tabPageColors.Location = new System.Drawing.Point(4, 22);
+            this.tabPageColors.Name = "tabPageColors";
+            this.tabPageColors.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageColors.Size = new System.Drawing.Size(359, 245);
+            this.tabPageColors.TabIndex = 1;
+            this.tabPageColors.Text = "Colors";
+            this.tabPageColors.UseVisualStyleBackColor = true;
+            
+            // tabPagePoolConfig
+            this.tabPagePoolConfig.Controls.Add(this.radioButton10Lanes);
+            this.tabPagePoolConfig.Controls.Add(this.radioButton8Lanes);
+            this.tabPagePoolConfig.Controls.Add(this.labelPoolLanes);
+            this.tabPagePoolConfig.Location = new System.Drawing.Point(4, 22);
+            this.tabPagePoolConfig.Name = "tabPagePoolConfig";
+            this.tabPagePoolConfig.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPagePoolConfig.Size = new System.Drawing.Size(359, 245);
+            this.tabPagePoolConfig.TabIndex = 2;
+            this.tabPagePoolConfig.Text = "Pool Configuration";
+            this.tabPagePoolConfig.UseVisualStyleBackColor = true;
+            
+            // buttonRefreshPorts
+            this.buttonRefreshPorts.Location = new System.Drawing.Point(201, 39);
+            this.buttonRefreshPorts.Name = "buttonRefreshPorts";
+            this.buttonRefreshPorts.Size = new System.Drawing.Size(75, 23);
+            this.buttonRefreshPorts.TabIndex = 2;
+            this.buttonRefreshPorts.Text = "Refresh";
+            this.buttonRefreshPorts.UseVisualStyleBackColor = true;
+            this.buttonRefreshPorts.Click += new System.EventHandler(this.buttonRefreshPorts_Click);
+            
+            // comboBoxCOMPort
+            this.comboBoxCOMPort.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxCOMPort.FormattingEnabled = true;
+            this.comboBoxCOMPort.Location = new System.Drawing.Point(74, 41);
+            this.comboBoxCOMPort.Name = "comboBoxCOMPort";
+            this.comboBoxCOMPort.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxCOMPort.TabIndex = 1;
+            
+            // labelCOMPort
+            this.labelCOMPort.AutoSize = true;
+            this.labelCOMPort.Location = new System.Drawing.Point(14, 44);
+            this.labelCOMPort.Name = "labelCOMPort";
+            this.labelCOMPort.Size = new System.Drawing.Size(54, 13);
+            this.labelCOMPort.TabIndex = 0;
+            this.labelCOMPort.Text = "COM Port:";
+            
+            // buttonResetColors
+            this.buttonResetColors.Location = new System.Drawing.Point(282, 216);
+            this.buttonResetColors.Name = "buttonResetColors";
+            this.buttonResetColors.Size = new System.Drawing.Size(75, 23);
+            this.buttonResetColors.TabIndex = 16;
+            this.buttonResetColors.Text = "Reset All";
+            this.buttonResetColors.UseVisualStyleBackColor = true;
+            this.buttonResetColors.Click += new System.EventHandler(this.buttonResetColors_Click);
+            
+            // labelBackgroundColor
+            this.labelBackgroundColor.AutoSize = true;
+            this.labelBackgroundColor.Location = new System.Drawing.Point(14, 18);
+            this.labelBackgroundColor.Name = "labelBackgroundColor";
+            this.labelBackgroundColor.Size = new System.Drawing.Size(92, 13);
+            this.labelBackgroundColor.TabIndex = 0;
+            this.labelBackgroundColor.Text = "Background Color";
+            
+            // buttonBackgroundColor
+            this.buttonBackgroundColor.Location = new System.Drawing.Point(201, 13);
+            this.buttonBackgroundColor.Name = "buttonBackgroundColor";
+            this.buttonBackgroundColor.Size = new System.Drawing.Size(75, 23);
+            this.buttonBackgroundColor.TabIndex = 8;
+            this.buttonBackgroundColor.Text = "Change...";
+            this.buttonBackgroundColor.UseVisualStyleBackColor = true;
+            this.buttonBackgroundColor.Click += new System.EventHandler(this.buttonBackgroundColor_Click);
+            
+            // labelTextColor
+            this.labelTextColor.AutoSize = true;
+            this.labelTextColor.Location = new System.Drawing.Point(14, 47);
+            this.labelTextColor.Name = "labelTextColor";
+            this.labelTextColor.Size = new System.Drawing.Size(55, 13);
+            this.labelTextColor.TabIndex = 1;
+            this.labelTextColor.Text = "Text Color";
+            
+            // buttonTextColor
+            this.buttonTextColor.Location = new System.Drawing.Point(201, 42);
+            this.buttonTextColor.Name = "buttonTextColor";
+            this.buttonTextColor.Size = new System.Drawing.Size(75, 23);
+            this.buttonTextColor.TabIndex = 9;
+            this.buttonTextColor.Text = "Change...";
+            this.buttonTextColor.UseVisualStyleBackColor = true;
+            this.buttonTextColor.Click += new System.EventHandler(this.buttonTextColor_Click);
+            
+            // labelHeaderLabelsColor
+            this.labelHeaderLabelsColor.AutoSize = true;
+            this.labelHeaderLabelsColor.Location = new System.Drawing.Point(14, 76);
+            this.labelHeaderLabelsColor.Name = "labelHeaderLabelsColor";
+            this.labelHeaderLabelsColor.Size = new System.Drawing.Size(104, 13);
+            this.labelHeaderLabelsColor.TabIndex = 2;
+            this.labelHeaderLabelsColor.Text = "Header Labels Color";
+            
+            // buttonHeaderLabelsColor
+            this.buttonHeaderLabelsColor.Location = new System.Drawing.Point(201, 71);
+            this.buttonHeaderLabelsColor.Name = "buttonHeaderLabelsColor";
+            this.buttonHeaderLabelsColor.Size = new System.Drawing.Size(75, 23);
+            this.buttonHeaderLabelsColor.TabIndex = 10;
+            this.buttonHeaderLabelsColor.Text = "Change...";
+            this.buttonHeaderLabelsColor.UseVisualStyleBackColor = true;
+            this.buttonHeaderLabelsColor.Click += new System.EventHandler(this.buttonHeaderLabelsColor_Click);
+            
+            // labelColumnHeadersColor
+            this.labelColumnHeadersColor.AutoSize = true;
+            this.labelColumnHeadersColor.Location = new System.Drawing.Point(14, 105);
+            this.labelColumnHeadersColor.Name = "labelColumnHeadersColor";
+            this.labelColumnHeadersColor.Size = new System.Drawing.Size(112, 13);
+            this.labelColumnHeadersColor.TabIndex = 3;
+            this.labelColumnHeadersColor.Text = "Column Headers Color";
+            
+            // buttonColumnHeadersColor
+            this.buttonColumnHeadersColor.Location = new System.Drawing.Point(201, 100);
+            this.buttonColumnHeadersColor.Name = "buttonColumnHeadersColor";
+            this.buttonColumnHeadersColor.Size = new System.Drawing.Size(75, 23);
+            this.buttonColumnHeadersColor.TabIndex = 11;
+            this.buttonColumnHeadersColor.Text = "Change...";
+            this.buttonColumnHeadersColor.UseVisualStyleBackColor = true;
+            this.buttonColumnHeadersColor.Click += new System.EventHandler(this.buttonColumnHeadersColor_Click);
+            
+            // labelNameLabelsColor
+            this.labelNameLabelsColor.AutoSize = true;
+            this.labelNameLabelsColor.Location = new System.Drawing.Point(14, 134);
+            this.labelNameLabelsColor.Name = "labelNameLabelsColor";
+            this.labelNameLabelsColor.Size = new System.Drawing.Size(97, 13);
+            this.labelNameLabelsColor.TabIndex = 4;
+            this.labelNameLabelsColor.Text = "Name Labels Color";
+            
             this.tabControl.SuspendLayout();
             this.tabPageConnection.SuspendLayout();
             this.tabPageColors.SuspendLayout();
@@ -85,6 +276,7 @@ namespace SRAYSScoreboard
             this.SuspendLayout();
             
             // Form settings
+            // Settings
             this.AcceptButton = this.buttonOK;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(391, 324);
@@ -113,6 +305,7 @@ namespace SRAYSScoreboard
             this.radioButton8Lanes.TabIndex = 1;
             this.radioButton8Lanes.Text = "8";
             this.radioButton8Lanes.UseVisualStyleBackColor = true;
+            this.radioButton8Lanes.CheckedChanged += new System.EventHandler(this.radioButton8Lanes_CheckedChanged);
             
             this.radioButton10Lanes.AutoSize = true;
             this.radioButton10Lanes.Checked = true;
@@ -123,6 +316,7 @@ namespace SRAYSScoreboard
             this.radioButton10Lanes.TabStop = true;
             this.radioButton10Lanes.Text = "10";
             this.radioButton10Lanes.UseVisualStyleBackColor = true;
+            this.radioButton10Lanes.CheckedChanged += new System.EventHandler(this.radioButton10Lanes_CheckedChanged);
             
             // Color labels
             this.labelTimeLabelsColor.AutoSize = true;

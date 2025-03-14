@@ -49,6 +49,7 @@ The settings dialog is organized into three tabs:
 ### Connection Tab
 Configure the COM port used to connect to the timing system:
 - Select the COM port from the dropdown list
+- COM5 is automatically recommended as the default timing system port
 - Click "Refresh" to update the list of available ports
 - Click "OK" to apply the changes
 

@@ -52,9 +52,6 @@ namespace SRAYSScoreboard
             this.serialPort = new System.IO.Ports.SerialPort(this.components);
             this.labelTime = new System.Windows.Forms.Label();
             this.labelEvent = new System.Windows.Forms.Label();
-            this.contextMenuSettings = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripMenuSettings = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
@@ -100,7 +97,6 @@ namespace SRAYSScoreboard
             this.labelName10 = new System.Windows.Forms.Label();
             this.labelTime10 = new System.Windows.Forms.Label();
             this.labelPlace10 = new System.Windows.Forms.Label();
-            this.contextMenuSettings.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -133,27 +129,6 @@ namespace SRAYSScoreboard
             this.labelEvent.TabIndex = 1;
             this.labelEvent.Text = "Event";
             // 
-            // contextMenuSettings
-            // 
-            this.contextMenuSettings.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuSettings,
-            this.toolStripMenuExit});
-            this.contextMenuSettings.Name = "contextMenuSettings";
-            this.contextMenuSettings.Size = new System.Drawing.Size(117, 48);
-            // 
-            // toolStripMenuSettings
-            // 
-            this.toolStripMenuSettings.Name = "toolStripMenuSettings";
-            this.toolStripMenuSettings.Size = new System.Drawing.Size(116, 22);
-            this.toolStripMenuSettings.Text = "Settings";
-            this.toolStripMenuSettings.Click += new System.EventHandler(this.toolStripMenuSettings_Click);
-            // 
-            // toolStripMenuExit
-            // 
-            this.toolStripMenuExit.Name = "toolStripMenuExit";
-            this.toolStripMenuExit.Size = new System.Drawing.Size(116, 22);
-            this.toolStripMenuExit.Text = "Exit";
-            this.toolStripMenuExit.Click += new System.EventHandler(this.toolStripMenuExit_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -717,7 +692,6 @@ namespace SRAYSScoreboard
             this.BackColor = System.Drawing.Color.Black;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1920, 1080);
-            // Remove context menu from the form
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.labelEvent);
             this.Controls.Add(this.labelTime);
@@ -728,7 +702,6 @@ namespace SRAYSScoreboard
             this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Scoreboard_FormClosed);
             this.Load += new System.EventHandler(this.Scoreboard_Load);
-            this.contextMenuSettings.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
@@ -786,8 +759,5 @@ namespace SRAYSScoreboard
         private System.Windows.Forms.Label labelTime10;
         private System.Windows.Forms.Label labelPlace10;
         private System.Windows.Forms.Label labelName10;
-        private System.Windows.Forms.ContextMenuStrip contextMenuSettings;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuSettings;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuExit;
     }
 }

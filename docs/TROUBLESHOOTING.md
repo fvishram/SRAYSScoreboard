@@ -98,6 +98,7 @@ The diagram above shows the data flow from the timing system to the application 
 2. **Verify COM Port Settings**
    - Open the Settings dialog by pressing F2 or right-clicking and selecting "Settings"
    - In the Connection tab, select the correct COM port from the dropdown list
+   - Note that COM5 is automatically recommended as the default timing system port
    - Click "Refresh" to update the list of available ports
    - Check Windows Device Manager to confirm the COM port is properly installed
 

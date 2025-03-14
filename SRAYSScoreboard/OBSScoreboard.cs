@@ -299,6 +299,41 @@ namespace SRAYSScoreboard
         }
         
         /// <summary>
+        /// Applies the specified background color to the scoreboard.
+        /// </summary>
+        /// <param name="color">The color to apply</param>
+        public void ApplyBackgroundColor(Color color)
+        {
+            this.BackColor = color;
+            tableLayoutPanel1.BackColor = color;
+        }
+        
+        /// <summary>
+        /// Applies all color settings to the scoreboard.
+        /// </summary>
+        /// <param name="backgroundColor">The background color</param>
+        /// <param name="headerLabelsColor">The header labels color</param>
+        /// <param name="columnHeadersColor">The column headers color</param>
+        /// <param name="nameLabelsColor">The name labels color</param>
+        /// <param name="timeLabelsColor">The time labels color</param>
+        /// <param name="placeLabelsColor">The place labels color</param>
+        /// <param name="laneLabelsColor">The lane labels color</param>
+        public void ApplyColorSettings(Color backgroundColor, Color headerLabelsColor, Color columnHeadersColor, 
+                                      Color nameLabelsColor, Color timeLabelsColor, Color placeLabelsColor, Color laneLabelsColor)
+        {
+            // Apply background color
+            ApplyBackgroundColor(backgroundColor);
+            
+            // Apply individual color settings
+            ApplyHeaderLabelsColor(headerLabelsColor);
+            ApplyColumnHeadersColor(columnHeadersColor);
+            ApplyNameLabelsColor(nameLabelsColor);
+            ApplyTimeLabelsColor(timeLabelsColor);
+            ApplyPlaceLabelsColor(placeLabelsColor);
+            ApplyLaneLabelsColor(laneLabelsColor);
+        }
+        
+        /// <summary>
         /// Updates the visibility of lanes based on the selected pool configuration.
         /// </summary>
         /// <param name="laneCount">The number of lanes to display (8 or 10)</param>

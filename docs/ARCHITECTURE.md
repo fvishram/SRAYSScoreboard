@@ -89,7 +89,15 @@ A secondary form optimized for OBS capture that:
 A tabbed dialog form that:
 - Provides a centralized interface for application configuration
 - Allows COM port selection with a dropdown list and refresh option
-- Offers comprehensive color customization for all UI elements
+- Automatically recommends COM5 as the default timing system port
+- Offers comprehensive color customization for all UI elements:
+  - Background color
+  - Header labels color (event name, running time)
+  - Column headers color (Lane, Name, Place, Time)
+  - Name labels color
+  - Time labels color
+  - Place labels color
+  - Lane labels color
 - Enables configuration of pool lanes (8 or 10)
 
 Key methods:

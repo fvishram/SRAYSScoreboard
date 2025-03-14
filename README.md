@@ -139,13 +139,22 @@ Before using SRAYSScoreboard, you must configure your Omega ARES 21 timing syste
 - Real-time display of swimming competition data
 - Support for both 8-lane and 10-lane pool configurations
 - Comprehensive settings dialog with tabbed interface
-- Customizable colors for all display elements
+- Customizable colors for all display elements:
+  - Background color
+  - Header labels color (event name, running time)
+  - Column headers color (Lane, Name, Place, Time)
+  - Name labels color
+  - Time labels color
+  - Place labels color
+  - Lane labels color
 - Pool configuration options (8 or 10 lanes)
-- Easy COM port selection with dropdown list
-- Dedicated OBS interface for live streaming
+- Easy COM port selection with dropdown list and refresh option
+- COM5 automatically recommended as the default timing system port
+- Dedicated OBS interface for live streaming with automatic updates
 - Automatic saving and loading of user preferences
 - Comprehensive error handling and connection management
 - Keyboard shortcuts (F2 for settings, Escape to exit)
+- Thread-safe UI updates for real-time data display
 
 ## Troubleshooting
 

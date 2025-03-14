@@ -28,9 +28,15 @@ namespace SRAYSScoreboard
     /// <summary>
     /// Settings form for the scoreboard application.
     /// Allows configuration of COM port, colors, and pool lane count.
+    /// This form operates independently from the main scoreboard.
     /// </summary>
     public partial class Settings : Form
     {
+        /// <summary>
+        /// Event raised when settings are applied.
+        /// </summary>
+        public event EventHandler SettingsApplied;
+
         /// <summary>
         /// Gets or sets the selected COM port.
         /// </summary>
@@ -80,6 +86,16 @@ namespace SRAYSScoreboard
         /// Gets or sets the pool lane count.
         /// </summary>
         public int PoolLaneCount { get; private set; }
+
+        /// <summary>
+        /// Reference to the main scoreboard form.
+        /// </summary>
+        private Scoreboard mainScoreboard;
+
+        /// <summary>
+        /// Reference to the OBS scoreboard form.
+        /// </summary>
+        private OBSScoreboard obsScoreboard;
 
         /// <summary>
         /// Initializes a new instance of the Settings form.
@@ -134,22 +150,78 @@ namespace SRAYSScoreboard
             // Get available COM ports
             string[] availablePorts = SerialPort.GetPortNames();
 
+            // Check if COM5 is in the list of available ports
+            bool com5Available = Array.Exists(availablePorts, port => port == "COM5");
+            
+            // If COM5 is not available, add it to the list as the recommended port
+            if (!com5Available)
+            {
+                // Add COM5 as the first item with a special label
+                comboBoxCOMPort.Items.Add("COM5 (Recommended for Timing System)");
+            }
+
             // Add each available port to the combo box
             foreach (string port in availablePorts)
             {
-                comboBoxCOMPort.Items.Add(port);
+                // If this is COM5, add it with a special label
+                if (port == "COM5")
+                {
+                    comboBoxCOMPort.Items.Add("COM5 (Recommended for Timing System)");
+                }
+                else
+                {
+                    comboBoxCOMPort.Items.Add(port);
+                }
             }
 
             // Select the current COM port if it exists
-            if (!string.IsNullOrEmpty(COMPort) && comboBoxCOMPort.Items.Contains(COMPort))
+            if (!string.IsNullOrEmpty(COMPort))
             {
-                comboBoxCOMPort.SelectedItem = COMPort;
+                // Handle the case where COMPort is "COM5" but the item is "COM5 (Recommended for Timing System)"
+                if (COMPort == "COM5")
+                {
+                    for (int i = 0; i < comboBoxCOMPort.Items.Count; i++)
+                    {
+                        if (comboBoxCOMPort.Items[i].ToString().StartsWith("COM5"))
+                        {
+                            comboBoxCOMPort.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+                else if (comboBoxCOMPort.Items.Contains(COMPort))
+                {
+                    comboBoxCOMPort.SelectedItem = COMPort;
+                }
             }
             else if (comboBoxCOMPort.Items.Count > 0)
             {
                 // Select the first port if the current port doesn't exist
                 comboBoxCOMPort.SelectedIndex = 0;
             }
+            
+            // Set the form title to indicate the default port
+            this.Text = "Scoreboard Settings - Default Timing System Port: COM5";
+        }
+        
+        /// <summary>
+        /// Public method to refresh the COM ports list.
+        /// This can be called from other forms when the Settings form is shown.
+        /// </summary>
+        public void RefreshComPorts()
+        {
+            PopulateComPorts();
+        }
+
+        /// <summary>
+        /// Sets the references to the scoreboard forms.
+        /// </summary>
+        /// <param name="scoreboard">The main scoreboard form</param>
+        /// <param name="obsForm">The OBS scoreboard form</param>
+        public void SetScoreboardReferences(Scoreboard scoreboard, OBSScoreboard obsForm)
+        {
+            mainScoreboard = scoreboard;
+            obsScoreboard = obsForm;
         }
 
         /// <summary>
@@ -171,9 +243,17 @@ namespace SRAYSScoreboard
             // Save all settings
             Properties.Settings.Default.Save();
 
-            // Close the form with OK result
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            // Apply settings to the scoreboard forms if they exist
+            if (mainScoreboard != null)
+            {
+                mainScoreboard.ApplySettings(this);
+            }
+
+            // Raise the SettingsApplied event
+            SettingsApplied?.Invoke(this, EventArgs.Empty);
+
+            // Hide the form instead of closing it
+            this.Hide();
         }
 
         /// <summary>
@@ -181,9 +261,8 @@ namespace SRAYSScoreboard
         /// </summary>
         private void buttonCancel_Click(object sender, EventArgs e)
         {
-            // Close the form with Cancel result
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            // Just hide the form instead of closing it
+            this.Hide();
         }
 
         /// <summary>
@@ -211,6 +290,9 @@ namespace SRAYSScoreboard
                     // Update the background color
                     BackgroundColor = colorDialog.Color;
                     Properties.Settings.Default.BackgroundColor = BackgroundColor;
+                    
+                    // Auto-apply the change to all scoreboards
+                    ApplyChangesToScoreboards();
                 }
             }
         }
@@ -231,6 +313,9 @@ namespace SRAYSScoreboard
                     // Update the text color
                     TextColor = colorDialog.Color;
                     Properties.Settings.Default.TextColor = TextColor;
+                    
+                    // Auto-apply the change to all scoreboards
+                    ApplyChangesToScoreboards();
                 }
             }
         }
@@ -251,6 +336,9 @@ namespace SRAYSScoreboard
                     // Update the header labels color
                     HeaderLabelsColor = colorDialog.Color;
                     Properties.Settings.Default.HeaderLabelsColor = HeaderLabelsColor;
+                    
+                    // Auto-apply the change to all scoreboards
+                    ApplyChangesToScoreboards();
                 }
             }
         }
@@ -271,6 +359,9 @@ namespace SRAYSScoreboard
                     // Update the column headers color
                     ColumnHeadersColor = colorDialog.Color;
                     Properties.Settings.Default.ColumnHeadersColor = ColumnHeadersColor;
+                    
+                    // Auto-apply the change to all scoreboards
+                    ApplyChangesToScoreboards();
                 }
             }
         }
@@ -291,6 +382,9 @@ namespace SRAYSScoreboard
                     // Update the name labels color
                     NameLabelsColor = colorDialog.Color;
                     Properties.Settings.Default.NameLabelsColor = NameLabelsColor;
+                    
+                    // Auto-apply the change to all scoreboards
+                    ApplyChangesToScoreboards();
                 }
             }
         }
@@ -311,6 +405,9 @@ namespace SRAYSScoreboard
                     // Update the time labels color
                     TimeLabelsColor = colorDialog.Color;
                     Properties.Settings.Default.TimeLabelsColor = TimeLabelsColor;
+                    
+                    // Auto-apply the change to all scoreboards
+                    ApplyChangesToScoreboards();
                 }
             }
         }
@@ -331,6 +428,9 @@ namespace SRAYSScoreboard
                     // Update the place labels color
                     PlaceLabelsColor = colorDialog.Color;
                     Properties.Settings.Default.PlaceLabelsColor = PlaceLabelsColor;
+                    
+                    // Auto-apply the change to all scoreboards
+                    ApplyChangesToScoreboards();
                 }
             }
         }
@@ -351,6 +451,9 @@ namespace SRAYSScoreboard
                     // Update the lane labels color
                     LaneLabelsColor = colorDialog.Color;
                     Properties.Settings.Default.LaneLabelsColor = LaneLabelsColor;
+                    
+                    // Auto-apply the change to all scoreboards
+                    ApplyChangesToScoreboards();
                 }
             }
         }
@@ -380,7 +483,68 @@ namespace SRAYSScoreboard
             Properties.Settings.Default.PlaceLabelsColor = PlaceLabelsColor;
             Properties.Settings.Default.LaneLabelsColor = LaneLabelsColor;
 
+            // Auto-apply the changes to all scoreboards
+            ApplyChangesToScoreboards();
+
             MessageBox.Show("Colors have been reset to default values.", "Reset Colors", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        /// <summary>
+        /// Applies the current settings to all scoreboard forms.
+        /// </summary>
+        private void ApplyChangesToScoreboards()
+        {
+            try
+            {
+                // Save settings to ensure they're persisted
+                Properties.Settings.Default.Save();
+
+                // Apply settings to the main scoreboard if it exists
+                if (mainScoreboard != null)
+                {
+                    mainScoreboard.ApplySettings(this);
+                }
+
+                // Raise the SettingsApplied event to notify any listeners
+                SettingsApplied?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error applying settings: {ex.Message}", 
+                    "Settings Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// Handles the radio button change for pool lane configuration.
+        /// </summary>
+        private void radioButton8Lanes_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton8Lanes.Checked)
+            {
+                // Update the pool lane count setting
+                PoolLaneCount = 8;
+                Properties.Settings.Default.PoolLaneCount = PoolLaneCount;
+                
+                // Auto-apply the change to all scoreboards
+                ApplyChangesToScoreboards();
+            }
+        }
+
+        /// <summary>
+        /// Handles the radio button change for pool lane configuration.
+        /// </summary>
+        private void radioButton10Lanes_CheckedChanged(object sender, EventArgs e)
+        {
+            if (radioButton10Lanes.Checked)
+            {
+                // Update the pool lane count setting
+                PoolLaneCount = 10;
+                Properties.Settings.Default.PoolLaneCount = PoolLaneCount;
+                
+                // Auto-apply the change to all scoreboards
+                ApplyChangesToScoreboards();
+            }
         }
     }
 }

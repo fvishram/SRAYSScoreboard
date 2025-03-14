@@ -44,6 +44,9 @@ namespace SRAYSScoreboard
         /// <summary>Reference to the OBS scoreboard form</summary>
         private OBSScoreboard obsScoreboard;
         
+        /// <summary>Reference to the Settings form</summary>
+        private Settings settingsForm;
+        
         /// <summary>
         /// Sets the reference to the OBS scoreboard form.
         /// This allows the main form to update the OBS form when settings change.
@@ -52,6 +55,15 @@ namespace SRAYSScoreboard
         public void SetOBSScoreboard(OBSScoreboard obsForm)
         {
             obsScoreboard = obsForm;
+        }
+        
+        /// <summary>
+        /// Sets the reference to the Settings form.
+        /// </summary>
+        /// <param name="settings">The Settings form</param>
+        public void SetSettingsForm(Settings settings)
+        {
+            settingsForm = settings;
         }
         
         /// <summary>
@@ -93,36 +105,69 @@ namespace SRAYSScoreboard
         }
         
         /// <summary>
-        /// Handles the form's KeyDown event.
-        /// Opens the settings dialog when F2 is pressed.
+        /// Shows the settings form.
         /// </summary>
-        private void Scoreboard_KeyDown(object sender, KeyEventArgs e)
+        private void ShowSettingsForm()
         {
-            // Open settings dialog when F2 is pressed
-            if (e.KeyCode == Keys.F2)
+            if (settingsForm != null)
             {
-                OpenSettingsDialog();
-                e.Handled = true;
+                try
+                {
+                    // Refresh the COM ports list
+                    settingsForm.RefreshComPorts();
+                    
+                    // Show the settings form
+                    settingsForm.Show();
+                    
+                    // Bring it to the front
+                    settingsForm.BringToFront();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error showing settings form: {ex.Message}", 
+                        "Settings Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            // Close application when Escape is pressed
-            else if (e.KeyCode == Keys.Escape)
+            else
             {
-                this.Close();
-                e.Handled = true;
+                MessageBox.Show("Settings form is not available. Please try again later.", 
+                    "Settings Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         
         /// <summary>
-        /// Opens the settings dialog and applies the settings if OK is clicked.
+        /// Handles the form's KeyDown event.
+        /// Shows the settings form when F2 is pressed.
         /// </summary>
-        private void OpenSettingsDialog()
+        private void Scoreboard_KeyDown(object sender, KeyEventArgs e)
         {
-            Settings formSettings = new Settings();
-            
-            // Show the settings dialog
-            if (formSettings.ShowDialog() == DialogResult.OK)
+            try
             {
-                ApplySettings(formSettings);
+                // Show settings form when F2 is pressed
+                if (e.KeyCode == Keys.F2)
+                {
+                    ShowSettingsForm();
+                    e.Handled = true;
+                }
+                // Close application when Escape is pressed
+                else if (e.KeyCode == Keys.Escape)
+                {
+                    this.Close();
+                    e.Handled = true;
+                }
+                // Mark other key events as not handled
+                else
+                {
+                    e.Handled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error and show a message
+                Console.WriteLine($"Error in KeyDown event handler: {ex.Message}");
+                MessageBox.Show($"An error occurred while processing keyboard input: {ex.Message}", 
+                    "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                e.Handled = true;
             }
         }
         
@@ -176,6 +221,18 @@ namespace SRAYSScoreboard
                 // Update the OBS scoreboard if it exists
                 if (obsScoreboard != null)
                 {
+                    // Apply color settings to the OBS scoreboard
+                    obsScoreboard.ApplyColorSettings(
+                        formSettings.BackgroundColor,
+                        formSettings.HeaderLabelsColor,
+                        formSettings.ColumnHeadersColor,
+                        formSettings.NameLabelsColor,
+                        formSettings.TimeLabelsColor,
+                        formSettings.PlaceLabelsColor,
+                        formSettings.LaneLabelsColor
+                    );
+                    
+                    // Update pool lane visibility
                     obsScoreboard.UpdatePoolLaneVisibility(formSettings.PoolLaneCount);
                 }
             }
@@ -186,344 +243,6 @@ namespace SRAYSScoreboard
             }
         }
         
-        /// <summary>
-        /// Initializes the COM port submenu in the context menu.
-        /// </summary>
-        private void InitializeComPortMenu()
-        {
-            // Create a submenu for COM ports
-            ToolStripMenuItem comPortMenu = new ToolStripMenuItem("COM Port");
-            
-            // Get available COM ports
-            string[] availablePorts = SerialPort.GetPortNames();
-            
-            // Add each available port to the submenu
-            foreach (string port in availablePorts)
-            {
-                ToolStripMenuItem portItem = new ToolStripMenuItem(port);
-                portItem.Click += ComPortMenuItem_Click;
-                
-                // Check the current port
-                if (port == serialPort.PortName)
-                {
-                    portItem.Checked = true;
-                }
-                
-                comPortMenu.DropDownItems.Add(portItem);
-            }
-            
-            // Add a refresh option to update the list of available ports
-            comPortMenu.DropDownItems.Add(new ToolStripSeparator());
-            ToolStripMenuItem refreshItem = new ToolStripMenuItem("Refresh List");
-            refreshItem.Click += RefreshComPorts_Click;
-            comPortMenu.DropDownItems.Add(refreshItem);
-            
-            // Insert the COM port menu between Settings and Exit
-            contextMenuSettings.Items.Insert(1, comPortMenu);
-        }
-        
-        /// <summary>
-        /// Initializes the Colors submenu in the context menu.
-        /// </summary>
-        private void InitializeColorsMenu()
-        {
-            // Create a submenu for Colors
-            ToolStripMenuItem colorsMenu = new ToolStripMenuItem("Colors");
-            
-            // Add background color option
-            ToolStripMenuItem backgroundColorItem = new ToolStripMenuItem("Background Color");
-            backgroundColorItem.Click += BackgroundColorMenuItem_Click;
-            colorsMenu.DropDownItems.Add(backgroundColorItem);
-            
-            // Add text color option (kept for backward compatibility)
-            ToolStripMenuItem textColorItem = new ToolStripMenuItem("Text Color (All)");
-            textColorItem.Click += TextColorMenuItem_Click;
-            colorsMenu.DropDownItems.Add(textColorItem);
-            
-            // Add separator
-            colorsMenu.DropDownItems.Add(new ToolStripSeparator());
-            
-            // Add individual color options for each label group
-            ToolStripMenuItem headerLabelsColorItem = new ToolStripMenuItem("Header Labels Color");
-            headerLabelsColorItem.Click += HeaderLabelsColorMenuItem_Click;
-            colorsMenu.DropDownItems.Add(headerLabelsColorItem);
-            
-            ToolStripMenuItem columnHeadersColorItem = new ToolStripMenuItem("Column Headers Color");
-            columnHeadersColorItem.Click += ColumnHeadersColorMenuItem_Click;
-            colorsMenu.DropDownItems.Add(columnHeadersColorItem);
-            
-            ToolStripMenuItem nameLabelsColorItem = new ToolStripMenuItem("Name Labels Color");
-            nameLabelsColorItem.Click += NameLabelsColorMenuItem_Click;
-            colorsMenu.DropDownItems.Add(nameLabelsColorItem);
-            
-            ToolStripMenuItem timeLabelsColorItem = new ToolStripMenuItem("Time Labels Color");
-            timeLabelsColorItem.Click += TimeLabelsColorMenuItem_Click;
-            colorsMenu.DropDownItems.Add(timeLabelsColorItem);
-            
-            ToolStripMenuItem placeLabelsColorItem = new ToolStripMenuItem("Place Labels Color");
-            placeLabelsColorItem.Click += PlaceLabelsColorMenuItem_Click;
-            colorsMenu.DropDownItems.Add(placeLabelsColorItem);
-            
-            ToolStripMenuItem laneLabelsColorItem = new ToolStripMenuItem("Lane Labels Color");
-            laneLabelsColorItem.Click += LaneLabelsColorMenuItem_Click;
-            colorsMenu.DropDownItems.Add(laneLabelsColorItem);
-            
-            // Add reset colors option
-            colorsMenu.DropDownItems.Add(new ToolStripSeparator());
-            ToolStripMenuItem resetItem = new ToolStripMenuItem("Reset to Default Colors");
-            resetItem.Click += ResetColorsMenuItem_Click;
-            colorsMenu.DropDownItems.Add(resetItem);
-            
-            // Insert the Colors menu between COM Port and Exit
-            contextMenuSettings.Items.Insert(2, colorsMenu);
-        }
-        
-        /// <summary>
-        /// Handles the Header Labels Color menu item click event.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void HeaderLabelsColorMenuItem_Click(object sender, EventArgs e)
-        {
-            using (ColorDialog colorDialog = new ColorDialog())
-            {
-                // Use the current color as the initial color
-                colorDialog.Color = labelTime.ForeColor;
-                colorDialog.FullOpen = true;
-                
-                if (colorDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Apply the selected color to header labels
-                    ApplyHeaderLabelsColor(colorDialog.Color);
-                    
-                    // Save the color setting
-                    Properties.Settings.Default.HeaderLabelsColor = colorDialog.Color;
-                    Properties.Settings.Default.Save();
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Handles the Column Headers Color menu item click event.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void ColumnHeadersColorMenuItem_Click(object sender, EventArgs e)
-        {
-            using (ColorDialog colorDialog = new ColorDialog())
-            {
-                // Use the current color as the initial color
-                colorDialog.Color = label1.ForeColor;
-                colorDialog.FullOpen = true;
-                
-                if (colorDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Apply the selected color to column headers
-                    ApplyColumnHeadersColor(colorDialog.Color);
-                    
-                    // Save the color setting
-                    Properties.Settings.Default.ColumnHeadersColor = colorDialog.Color;
-                    Properties.Settings.Default.Save();
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Handles the Name Labels Color menu item click event.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void NameLabelsColorMenuItem_Click(object sender, EventArgs e)
-        {
-            using (ColorDialog colorDialog = new ColorDialog())
-            {
-                // Use the current color as the initial color
-                colorDialog.Color = nameLabels[0].ForeColor;
-                colorDialog.FullOpen = true;
-                
-                if (colorDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Apply the selected color to name labels
-                    ApplyNameLabelsColor(colorDialog.Color);
-                    
-                    // Save the color setting
-                    Properties.Settings.Default.NameLabelsColor = colorDialog.Color;
-                    Properties.Settings.Default.Save();
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Handles the Time Labels Color menu item click event.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void TimeLabelsColorMenuItem_Click(object sender, EventArgs e)
-        {
-            using (ColorDialog colorDialog = new ColorDialog())
-            {
-                // Use the current color as the initial color
-                colorDialog.Color = timeLabels[0].ForeColor;
-                colorDialog.FullOpen = true;
-                
-                if (colorDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Apply the selected color to time labels
-                    ApplyTimeLabelsColor(colorDialog.Color);
-                    
-                    // Save the color setting
-                    Properties.Settings.Default.TimeLabelsColor = colorDialog.Color;
-                    Properties.Settings.Default.Save();
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Handles the Place Labels Color menu item click event.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void PlaceLabelsColorMenuItem_Click(object sender, EventArgs e)
-        {
-            using (ColorDialog colorDialog = new ColorDialog())
-            {
-                // Use the current color as the initial color
-                colorDialog.Color = placeLabels[0].ForeColor;
-                colorDialog.FullOpen = true;
-                
-                if (colorDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Apply the selected color to place labels
-                    ApplyPlaceLabelsColor(colorDialog.Color);
-                    
-                    // Save the color setting
-                    Properties.Settings.Default.PlaceLabelsColor = colorDialog.Color;
-                    Properties.Settings.Default.Save();
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Handles the Lane Labels Color menu item click event.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void LaneLabelsColorMenuItem_Click(object sender, EventArgs e)
-        {
-            using (ColorDialog colorDialog = new ColorDialog())
-            {
-                // Use the current color as the initial color
-                Control[] controls = this.tableLayoutPanel1.Controls.Find("label5", true);
-                if (controls.Length > 0 && controls[0] is Label)
-                {
-                    colorDialog.Color = ((Label)controls[0]).ForeColor;
-                }
-                else
-                {
-                    colorDialog.Color = Color.LightSteelBlue;
-                }
-                
-                colorDialog.FullOpen = true;
-                
-                if (colorDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Apply the selected color to lane labels
-                    ApplyLaneLabelsColor(colorDialog.Color);
-                    
-                    // Save the color setting
-                    Properties.Settings.Default.LaneLabelsColor = colorDialog.Color;
-                    Properties.Settings.Default.Save();
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Handles the COM port menu item click event.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void ComPortMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolStripMenuItem clickedItem = (ToolStripMenuItem)sender;
-            string selectedPort = clickedItem.Text;
-            
-            try
-            {
-                // Close the port if it's open
-                if (serialPort.IsOpen)
-                {
-                    serialPort.Close();
-                }
-                
-                // Update the port name
-                serialPort.PortName = selectedPort;
-                
-                // Try to open the new port
-                if (Array.Exists(SerialPort.GetPortNames(), port => port == serialPort.PortName))
-                {
-                    serialPort.Open();
-                    
-                    // Update the checked state of all port menu items
-                    foreach (ToolStripMenuItem item in ((ToolStripMenuItem)contextMenuSettings.Items[1]).DropDownItems)
-                    {
-                        if (item.Text == selectedPort)
-                        {
-                            item.Checked = true;
-                        }
-                        else if (item.Text != "Refresh List")
-                        {
-                            item.Checked = false;
-                        }
-                    }
-                }
-                else
-                {
-                    MessageBox.Show($"COM port {serialPort.PortName} not found. Please check your connection.", 
-                        "Port Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error configuring serial port: {ex.Message}", 
-                    "Serial Port Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        
-        /// <summary>
-        /// Refreshes the list of available COM ports.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void RefreshComPorts_Click(object sender, EventArgs e)
-        {
-            // Get the existing COM port menu
-            ToolStripMenuItem comPortMenu = (ToolStripMenuItem)contextMenuSettings.Items[1];
-            
-            // Clear existing port items, but keep the separator and refresh option
-            while (comPortMenu.DropDownItems.Count > 2)
-            {
-                comPortMenu.DropDownItems.RemoveAt(0);
-            }
-            
-            // Get available COM ports
-            string[] availablePorts = SerialPort.GetPortNames();
-            
-            // Add each available port to the submenu
-            foreach (string port in availablePorts)
-            {
-                ToolStripMenuItem portItem = new ToolStripMenuItem(port);
-                portItem.Click += ComPortMenuItem_Click;
-                
-                // Check the current port
-                if (port == serialPort.PortName)
-                {
-                    portItem.Checked = true;
-                }
-                
-                // Insert at the beginning, before the separator
-                comPortMenu.DropDownItems.Insert(0, portItem);
-            }
-        }
 
         /// <summary>
         /// Handles the form load event. Attempts to open the serial port connection to the timing system
@@ -537,21 +256,42 @@ namespace SRAYSScoreboard
         {
             try
             {
+                // Set default COM port to COM5 for the timing system if not already set
+                if (string.IsNullOrEmpty(serialPort.PortName) || serialPort.PortName == "COM1")
+                {
+                    serialPort.PortName = "COM5";
+                    // Save the default COM port setting
+                    Properties.Settings.Default.COMPort = "COM5";
+                    Properties.Settings.Default.Save();
+                }
+                
+                // Display the current COM port in the window title for visibility
+                this.Text = $"SRAYS Scoreboard - Connected to {serialPort.PortName}";
+                
                 // Check if the port exists before trying to open it
                 if (Array.Exists(System.IO.Ports.SerialPort.GetPortNames(), port => port == serialPort.PortName))
                 {
                     serialPort.Open();
+                    this.Text = $"SRAYS Scoreboard - Connected to {serialPort.PortName}";
                 }
                 else
                 {
                     // Port doesn't exist, but we'll continue without it
                     Console.WriteLine($"Warning: COM port {serialPort.PortName} not found. Continuing without timing system connection.");
+                    
+                    // Just update the window title to indicate the port isn't connected - no message box
+                    this.Text = $"SRAYS Scoreboard - Timing System Not Connected (COM{serialPort.PortName.Replace("COM", "")})";
+                    
+                    // Add a tooltip to the form to provide additional information without being intrusive
+                    ToolTip toolTip = new ToolTip();
+                    toolTip.SetToolTip(this, $"Press F2 to open settings and configure the COM port (default: {serialPort.PortName})");
                 }
             }
             catch (Exception ex)
             {
                 // Log the error but continue without the timing system
                 Console.WriteLine($"Error opening serial port: {ex.Message}");
+                this.Text = $"SRAYS Scoreboard - Error Connecting to {serialPort.PortName}";
             }
             
             // Load saved color settings
@@ -617,7 +357,13 @@ namespace SRAYSScoreboard
                 else if (Properties.Settings.Default.TextColor != Color.Empty)
                 {
                     // Fall back to the legacy text color setting if no individual colors are set
-                    ApplyTextColor(Properties.Settings.Default.TextColor);
+                    Color textColor = Properties.Settings.Default.TextColor;
+                    ApplyHeaderLabelsColor(textColor);
+                    ApplyColumnHeadersColor(textColor);
+                    ApplyNameLabelsColor(textColor);
+                    ApplyTimeLabelsColor(textColor);
+                    ApplyPlaceLabelsColor(textColor);
+                    ApplyLaneLabelsColor(textColor);
                 }
             }
             catch (Exception ex)
@@ -701,15 +447,6 @@ namespace SRAYSScoreboard
             }
         }
 
-        /// <summary>
-        /// Placeholder for menu item click event.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            // Unused event handler
-        }
 
         /// <summary>
         /// Handles data received from the serial port. This event is triggered when
@@ -799,216 +536,6 @@ namespace SRAYSScoreboard
             }
         }
 
-        /// <summary>
-        /// Handles the Exit menu item click event. Closes the application.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void toolStripMenuExit_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        
-        /// <summary>
-        /// Handles the Background Color menu item click event. Opens a color dialog
-        /// to allow the user to select a new background color for the scoreboard.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void BackgroundColorMenuItem_Click(object sender, EventArgs e)
-        {
-            using (ColorDialog colorDialog = new ColorDialog())
-            {
-                colorDialog.Color = this.BackColor;
-                colorDialog.FullOpen = true;
-                
-                if (colorDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Apply the selected color to the form and table layout panel
-                    this.BackColor = colorDialog.Color;
-                    tableLayoutPanel1.BackColor = colorDialog.Color;
-                    
-                    // Save the color setting
-                    Properties.Settings.Default.BackgroundColor = colorDialog.Color;
-                    Properties.Settings.Default.Save();
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Handles the Text Color menu item click event. Opens a color dialog
-        /// to allow the user to select a new text color for the scoreboard.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void TextColorMenuItem_Click(object sender, EventArgs e)
-        {
-            using (ColorDialog colorDialog = new ColorDialog())
-            {
-                // Use the current text color of the first label as the initial color
-                colorDialog.Color = labelTime.ForeColor;
-                colorDialog.FullOpen = true;
-                
-                if (colorDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Apply the selected color to all data labels
-                    ApplyTextColor(colorDialog.Color);
-                    
-                    // Save the color setting
-                    Properties.Settings.Default.TextColor = colorDialog.Color;
-                    Properties.Settings.Default.Save();
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Applies the specified text color to all data labels in the scoreboard.
-        /// </summary>
-        /// <param name="color">The color to apply</param>
-        private void ApplyTextColor(Color color)
-        {
-            // Apply to header labels
-            labelTime.ForeColor = color;
-            labelEvent.ForeColor = color;
-            
-            // Apply to column headers
-            label1.ForeColor = color;
-            label2.ForeColor = color;
-            label3.ForeColor = color;
-            label4.ForeColor = color;
-            
-            // Apply to all data labels
-            foreach (Label label in nameLabels)
-            {
-                label.ForeColor = color;
-            }
-            
-            foreach (Label label in timeLabels)
-            {
-                label.ForeColor = color;
-            }
-            
-            foreach (Label label in placeLabels)
-            {
-                label.ForeColor = color;
-            }
-            
-            // Apply to lane number labels
-            for (int i = 5; i <= 14; i++)
-            {
-                Control[] controls = this.tableLayoutPanel1.Controls.Find("label" + i, true);
-                if (controls.Length > 0 && controls[0] is Label)
-                {
-                    ((Label)controls[0]).ForeColor = color;
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Handles the Reset Colors menu item click event. Resets the background and text colors
-        /// to their default values.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void ResetColorsMenuItem_Click(object sender, EventArgs e)
-        {
-            // Reset to default colors
-            this.BackColor = Color.Black;
-            tableLayoutPanel1.BackColor = Color.Black;
-            
-            // Define default colors
-            Color headerColor = SystemColors.HotTrack;
-            Color dataColor = Color.LightSteelBlue;
-            
-            // Reset header labels
-            ApplyHeaderLabelsColor(headerColor);
-            
-            // Reset column headers
-            ApplyColumnHeadersColor(headerColor);
-            
-            // Reset data labels
-            ApplyNameLabelsColor(dataColor);
-            ApplyTimeLabelsColor(dataColor);
-            ApplyPlaceLabelsColor(dataColor);
-            ApplyLaneLabelsColor(dataColor);
-            
-            // Reset the saved settings
-            Properties.Settings.Default.BackgroundColor = Color.Black;
-            Properties.Settings.Default.TextColor = headerColor;
-            Properties.Settings.Default.HeaderLabelsColor = headerColor;
-            Properties.Settings.Default.ColumnHeadersColor = headerColor;
-            Properties.Settings.Default.NameLabelsColor = dataColor;
-            Properties.Settings.Default.TimeLabelsColor = dataColor;
-            Properties.Settings.Default.PlaceLabelsColor = dataColor;
-            Properties.Settings.Default.LaneLabelsColor = dataColor;
-            Properties.Settings.Default.Save();
-        }
-        
-        /// <summary>
-        /// Initializes the Pool Configuration submenu in the context menu.
-        /// </summary>
-        private void InitializePoolConfigMenu()
-        {
-            // Create a submenu for Pool Configuration
-            ToolStripMenuItem poolConfigMenu = new ToolStripMenuItem("Pool Configuration");
-            
-            // Add 8-lane option
-            ToolStripMenuItem lanes8Item = new ToolStripMenuItem("8 Lanes");
-            lanes8Item.Click += PoolConfigMenuItem_Click;
-            lanes8Item.Tag = 8;
-            poolConfigMenu.DropDownItems.Add(lanes8Item);
-            
-            // Add 10-lane option
-            ToolStripMenuItem lanes10Item = new ToolStripMenuItem("10 Lanes");
-            lanes10Item.Click += PoolConfigMenuItem_Click;
-            lanes10Item.Tag = 10;
-            poolConfigMenu.DropDownItems.Add(lanes10Item);
-            
-            // Check the current configuration
-            int currentLaneCount = Properties.Settings.Default.PoolLaneCount;
-            foreach (ToolStripMenuItem item in poolConfigMenu.DropDownItems)
-            {
-                if ((int)item.Tag == currentLaneCount)
-                {
-                    item.Checked = true;
-                }
-            }
-            
-            // Insert the Pool Configuration menu between Colors and Exit
-            contextMenuSettings.Items.Insert(3, poolConfigMenu);
-        }
-        
-        /// <summary>
-        /// Handles the Pool Configuration menu item click event.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void PoolConfigMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolStripMenuItem clickedItem = (ToolStripMenuItem)sender;
-            int laneCount = (int)clickedItem.Tag;
-            
-            // Update the lane visibility
-            UpdatePoolLaneVisibility(laneCount);
-            
-            // Save the setting
-            Properties.Settings.Default.PoolLaneCount = laneCount;
-            Properties.Settings.Default.Save();
-            
-            // Update the checked state of all pool config menu items
-            ToolStripMenuItem poolConfigMenu = (ToolStripMenuItem)contextMenuSettings.Items[3];
-            foreach (ToolStripMenuItem item in poolConfigMenu.DropDownItems)
-            {
-                item.Checked = ((int)item.Tag == laneCount);
-            }
-            
-            // Update the OBS scoreboard if it exists
-            if (obsScoreboard != null)
-            {
-                obsScoreboard.UpdatePoolLaneVisibility(laneCount);
-            }
-        }
         
         /// <summary>
         /// Updates the visibility of lanes based on the selected pool configuration.
