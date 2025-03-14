@@ -791,4 +791,3 @@ namespace SRAYSScoreboard
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuExit;
     }
 }
-
