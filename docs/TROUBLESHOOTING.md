@@ -6,18 +6,25 @@ This document provides solutions for common issues you might encounter when usin
 
 ```mermaid
 flowchart LR
-    A[ARES 21\nTiming System] -->|RS-485 Data| B[Custom DB9 Cable]
-    B -->|Serial Data| C[PC Serial Port\nor USB Adapter]
-    C -->|Data Stream| D[SRAYSScoreboard\nApplication]
+    A["ARES 21
+    Timing System"] -->|RS-485 Data| B["Custom DB9 Cable"]
+    B -->|Serial Data| C["PC Serial Port
+    or USB Adapter"]
+    C -->|Data Stream| D["SRAYSScoreboard
+    Application"]
     
     style A fill:#f9f,stroke:#333,stroke-width:2px
     style B fill:#bbf,stroke:#33f,stroke-width:2px
     style C fill:#bfb,stroke:#3a3,stroke-width:2px
     style D fill:#fbb,stroke:#a33,stroke-width:2px
     
-    X1[Potential Issue:\nIncorrect Cable Wiring] -.-> B
-    X2[Potential Issue:\nWrong COM Port] -.-> C
-    X3[Potential Issue:\nTiming System Not\nConfigured Correctly] -.-> A
+    X1["Potential Issue:
+    Incorrect Cable Wiring"] -.-> B
+    X2["Potential Issue:
+    Wrong COM Port"] -.-> C
+    X3["Potential Issue:
+    Timing System Not
+    Configured Correctly"] -.-> A
 ```
 
 The diagram above shows the data flow from the timing system to the application and potential points of failure.
@@ -34,6 +41,39 @@ The diagram above shows the data flow from the timing system to the application 
    - Ensure the serial cable is securely connected to both the computer and the timing system
    - Verify you are using the correct custom DB9 cable with RS-485 protocol (not RS-232)
    
+     #### DB9 Connector Pin Numbering
+
+     ```mermaid
+     graph TB
+         subgraph "DB9 Female Connector (PC Side)"
+             direction TB
+             F1["Pin 1"] --- F2["Pin 2"] --- F3["Pin 3"] --- F4["Pin 4"] --- F5["Pin 5"]
+             F6["Pin 6"] --- F7["Pin 7"] --- F8["Pin 8"] --- F9["Pin 9"]
+             
+             F1 -.- FT1["T(+)/RS-485 B(+)"]
+             F2 -.- FT2["T(-)/RS-485 A(-)"]
+             F5 -.- FT5["Ground"]
+             
+             style F1 fill:#bbf,stroke:#33f,stroke-width:2px
+             style F2 fill:#fbb,stroke:#f33,stroke-width:2px
+             style F5 fill:#bbb,stroke:#333,stroke-width:2px
+         end
+         
+         subgraph "DB9 Male Connector (ARES Side)"
+             direction TB
+             M1["Pin 1"] --- M2["Pin 2"] --- M3["Pin 3"] --- M4["Pin 4"] --- M5["Pin 5"]
+             M6["Pin 6"] --- M7["Pin 7"] --- M8["Pin 8"] --- M9["Pin 9"]
+             
+             M3 -.- MT3["T(-)/RS-485 A(-)"]
+             M4 -.- MT4["T(+)/RS-485 B(+)"]
+             M7 -.- MT7["Ground"]
+             
+             style M3 fill:#fbb,stroke:#f33,stroke-width:2px
+             style M4 fill:#bbf,stroke:#33f,stroke-width:2px
+             style M7 fill:#bbb,stroke:#333,stroke-width:2px
+         end
+     ```
+     
      **PC Side (DB9 Female):**
      | DB9 Pin | Function      |
      |---------|---------------|
@@ -56,8 +96,9 @@ The diagram above shows the data flow from the timing system to the application 
    - Check for any damaged pins in the DB9 connectors on both ends
 
 2. **Verify COM Port Settings**
-   - Right-click on the scoreboard and select "COM Port" > "Refresh List"
-   - Ensure the correct COM port is selected
+   - Open the Settings dialog by pressing F2 or right-clicking and selecting "Settings"
+   - In the Connection tab, select the correct COM port from the dropdown list
+   - Click "Refresh" to update the list of available ports
    - Check Windows Device Manager to confirm the COM port is properly installed
 
 3. **Check Timing System Configuration**
@@ -113,6 +154,11 @@ The diagram above shows the data flow from the timing system to the application 
 3. **Verify Data Source**
    - Confirm that the timing system is properly configured with the correct event and swimmer information
 
+4. **Check Pool Lane Configuration**
+   - Open the Settings dialog by pressing F2
+   - Go to the Pool Configuration tab
+   - Ensure the correct number of lanes (8 or 10) is selected for your pool
+
 ### UI Display Problems
 
 **Symptoms:**
@@ -122,8 +168,10 @@ The diagram above shows the data flow from the timing system to the application 
 
 **Solutions:**
 1. **Reset Color Settings**
-   - Right-click on the scoreboard
-   - Select "Colors" > "Reset to Default Colors"
+   - Open the Settings dialog by pressing F2
+   - Go to the Colors tab
+   - Click "Reset Colors" to restore default colors
+   - Alternatively, right-click on the scoreboard and select "Colors" > "Reset to Default Colors"
 
 2. **Check Display Resolution**
    - Ensure your display resolution is at least 1024x768
@@ -164,13 +212,39 @@ The diagram above shows the data flow from the timing system to the application 
 
 **Solutions:**
 1. **Optimize Background Color**
-   - Choose a solid background color that doesn't appear in any text (bright green or blue works well)
-   - Right-click on the scoreboard and select "Colors" > "Background Color"
+   - Open the Settings dialog by pressing F2
+   - Go to the Colors tab
+   - Click "Background Color" and choose a solid color that doesn't appear in any text (bright green or blue works well)
+   - Click "OK" to apply the change
 
 2. **Adjust OBS Chroma Key Settings**
    - In OBS, add a "Chroma Key" filter to the scoreboard source
    - Fine-tune the similarity, smoothness, and key color spill reduction settings
    - Use the preview to check the results
+
+## Settings Dialog Issues
+
+### Settings Not Saving
+
+**Symptoms:**
+- Settings revert to previous values after restart
+- Changes made in the Settings dialog don't persist
+
+**Solutions:**
+1. **Check Permissions**
+   - Ensure you have write permissions to the application's settings directory
+   - Try running the application as administrator
+
+2. **Verify Dialog Closure**
+   - Make sure you're clicking "OK" to save settings, not "Cancel"
+   - The settings are only saved when you click "OK"
+
+3. **Check for File Corruption**
+   - If settings persistently fail to save, try resetting the application:
+     - Close the application
+     - Navigate to %APPDATA%\SRAYSScoreboard
+     - Rename or delete the user.config file
+     - Restart the application (this will create a new settings file with defaults)
 
 ## Performance Issues
 

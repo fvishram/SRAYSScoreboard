@@ -10,6 +10,43 @@ The Venus ERTD (Extended Real-Time Data) protocol is used by Omega timing system
 
 The Omega ARES 21 timing system uses RS-485 (not RS-232) for data transmission. A custom DB9 cable with different pinouts on each end is required:
 
+#### DB9 Connector Pin Numbering
+
+For reference, here is the standard DB9 pin numbering:
+
+```mermaid
+graph TB
+    subgraph "DB9 Female Connector (PC Side)"
+        direction TB
+        F1["Pin 1"] --- F2["Pin 2"] --- F3["Pin 3"] --- F4["Pin 4"] --- F5["Pin 5"]
+        F6["Pin 6"] --- F7["Pin 7"] --- F8["Pin 8"] --- F9["Pin 9"]
+        
+        F1 -.- FT1["T(+)/RS-485 B(+)"]
+        F2 -.- FT2["T(-)/RS-485 A(-)"]
+        F5 -.- FT5["Ground"]
+        
+        style F1 fill:#bbf,stroke:#33f,stroke-width:2px
+        style F2 fill:#fbb,stroke:#f33,stroke-width:2px
+        style F5 fill:#bbb,stroke:#333,stroke-width:2px
+    end
+    
+    subgraph "DB9 Male Connector (ARES Side)"
+        direction TB
+        M1["Pin 1"] --- M2["Pin 2"] --- M3["Pin 3"] --- M4["Pin 4"] --- M5["Pin 5"]
+        M6["Pin 6"] --- M7["Pin 7"] --- M8["Pin 8"] --- M9["Pin 9"]
+        
+        M3 -.- MT3["T(-)/RS-485 A(-)"]
+        M4 -.- MT4["T(+)/RS-485 B(+)"]
+        M7 -.- MT7["Ground"]
+        
+        style M3 fill:#fbb,stroke:#f33,stroke-width:2px
+        style M4 fill:#bbf,stroke:#33f,stroke-width:2px
+        style M7 fill:#bbb,stroke:#333,stroke-width:2px
+    end
+```
+
+#### Cable Pinout
+
 **PC Side (DB9 Female):**
 | DB9 Pin | Function      |
 |---------|---------------|
@@ -33,15 +70,15 @@ Note that the cable must be wired to connect T(+) to T(+) and T(-) to T(-), with
 ```mermaid
 graph LR
     subgraph "PC Side (DB9 Female)"
-        PC1[Pin 1: T+/RS-485 B+]
-        PC2[Pin 2: T-/RS-485 A-]
-        PC5[Pin 5: Ground]
+        PC1["Pin 1: T+/RS-485 B+"]
+        PC2["Pin 2: T-/RS-485 A-"]
+        PC5["Pin 5: Ground"]
     end
     
     subgraph "ARES Console Side (DB9 Male)"
-        ARES3[Pin 3: T-/RS-485 A-]
-        ARES4[Pin 4: T+/RS-485 B+]
-        ARES7[Pin 7: Ground]
+        ARES3["Pin 3: T-/RS-485 A-"]
+        ARES4["Pin 4: T+/RS-485 B+"]
+        ARES7["Pin 7: Ground"]
     end
     
     PC1 -->|Connect| ARES4

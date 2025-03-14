@@ -5,20 +5,28 @@ This document provides detailed information on how to customize the appearance a
 ```mermaid
 mindmap
   root((SRAYSScoreboard<br>Customization))
-    Color Options
-      Background Color
-      Text Colors
-        Global Text Color
-        Header Labels
-        Column Headers
-        Name Labels
-        Time Labels
-        Place Labels
-        Lane Labels
-      Reset to Default
-    COM Port Settings
-      Context Menu Selection
-      Settings Dialog
+    Settings Dialog
+      Connection
+        COM Port Selection
+        Refresh Ports
+      Colors
+        Background Color
+        Text Colors
+          Global Text Color
+          Header Labels
+          Column Headers
+          Name Labels
+          Time Labels
+          Place Labels
+          Lane Labels
+        Reset to Default
+      Pool Configuration
+        8 Lanes
+        10 Lanes
+    Context Menu
+      COM Port Selection
+      Colors
+      Pool Configuration
     OBS Integration
       Window Capture
       Color Keying
@@ -29,74 +37,81 @@ mindmap
 
 The diagram above shows the various customization options available in SRAYSScoreboard.
 
-## Color Customization
+## Settings Dialog
 
-SRAYSScoreboard offers extensive color customization options through its context menu. Right-click anywhere on the scoreboard to access these options.
+SRAYSScoreboard features a comprehensive settings dialog that provides a centralized interface for all customization options. You can access this dialog in two ways:
 
-### Background Color
+1. Press the F2 key while the scoreboard is active
+2. Right-click on the scoreboard and select "Settings" from the context menu
 
-You can change the background color of the entire scoreboard:
+The settings dialog is organized into three tabs:
 
-1. Right-click on the scoreboard
-2. Select "Colors" > "Background Color"
-3. Choose your desired color from the color picker
-4. Click "OK" to apply the change
+### Connection Tab
+Configure the COM port used to connect to the timing system:
+- Select the COM port from the dropdown list
+- Click "Refresh" to update the list of available ports
+- Click "OK" to apply the changes
 
-### Text Color Options
+### Colors Tab
+Customize the colors of various scoreboard elements:
+- Background Color - Changes the background color of the entire scoreboard
+- Text Color (All) - Changes all text elements to the same color
+- Header Labels Color - Changes the color of the event name and running time
+- Column Headers Color - Changes the color of the column titles (Lane, Name, Place, Time)
+- Name Labels Color - Changes the color of all swimmer names
+- Time Labels Color - Changes the color of all swimmer times
+- Place Labels Color - Changes the color of all place indicators
+- Lane Labels Color - Changes the color of the lane numbers
+- Reset Colors - Resets all colors to their default values
 
-#### Global Text Color
+### Pool Configuration Tab
+Configure the number of lanes displayed on the scoreboard:
+- 8 Lanes - Displays lanes 1-8 only
+- 10 Lanes - Displays all 10 lanes
 
-To change all text elements to the same color:
+## Context Menu Customization
 
-1. Right-click on the scoreboard
-2. Select "Colors" > "Text Color (All)"
-3. Choose your desired color from the color picker
-4. Click "OK" to apply the change
+SRAYSScoreboard also offers customization options through its context menu. Right-click anywhere on the scoreboard to access these options.
 
-#### Individual Element Colors
+### Color Customization
 
-For more granular control, you can customize the color of specific elements:
+You can change the colors of various scoreboard elements through the context menu:
 
 1. Right-click on the scoreboard
 2. Select "Colors" and then choose one of the following options:
+   - "Background Color" - Changes the background color of the entire scoreboard
+   - "Text Color (All)" - Changes all text elements to the same color
    - "Header Labels Color" - Changes the color of the event name and running time
    - "Column Headers Color" - Changes the color of the column titles (Lane, Name, Place, Time)
    - "Name Labels Color" - Changes the color of all swimmer names
    - "Time Labels Color" - Changes the color of all swimmer times
    - "Place Labels Color" - Changes the color of all place indicators
    - "Lane Labels Color" - Changes the color of the lane numbers
-3. Choose your desired color from the color picker
+   - "Reset to Default Colors" - Resets all colors to their default values
+3. Choose your desired color from the color picker (if applicable)
 4. Click "OK" to apply the change
-
-### Resetting Colors
-
-To reset all colors to their default values:
-
-1. Right-click on the scoreboard
-2. Select "Colors" > "Reset to Default Colors"
 
 The default color scheme uses:
 - Black background
 - Blue header labels and column headers
 - Light steel blue for all data (names, times, places, lane numbers)
 
-## COM Port Configuration
+### COM Port Configuration
 
-You can change the COM port used to connect to the timing system in two ways:
-
-### Using the Context Menu
+You can change the COM port used to connect to the timing system through the context menu:
 
 1. Right-click on the scoreboard
 2. Select "COM Port"
 3. Choose the desired COM port from the list
 4. If your COM port isn't listed, select "Refresh List" to update the available ports
 
-### Using the Settings Dialog
+### Pool Configuration
+
+You can change the number of lanes displayed on the scoreboard through the context menu:
 
 1. Right-click on the scoreboard
-2. Select "Settings"
-3. Enter the COM port name (e.g., "COM1")
-4. Click "OK" to apply the change
+2. Select "Pool Configuration"
+3. Choose either "8 Lanes" or "10 Lanes"
 
 ## OBS Integration
 
@@ -108,7 +123,11 @@ The OBS Scoreboard can be launched from the main application. This creates a sep
 
 ### Customizing the OBS Scoreboard
 
-The OBS Scoreboard inherits the color settings from the main scoreboard. Any changes made to the color scheme in the main application will be reflected in the OBS Scoreboard as well.
+The OBS Scoreboard inherits all settings from the main scoreboard, including:
+- Color settings (background, text, and individual element colors)
+- Pool configuration (8 or 10 lanes)
+
+Any changes made to these settings in the main application will be automatically reflected in the OBS Scoreboard.
 
 The OBS Scoreboard is designed to be:
 - Resizable to fit different streaming layouts
@@ -153,6 +172,39 @@ If your color settings aren't being saved between sessions:
 If you're having trouble connecting to the timing system:
 - Verify that the COM port is correctly installed and recognized by Windows
 - Ensure you are using the correct custom DB9 cable with RS-485 protocol (not RS-232)
+
+  #### DB9 Connector Pin Numbering
+
+  ```mermaid
+  graph TB
+      subgraph "DB9 Female Connector (PC Side)"
+          direction TB
+          F1["Pin 1"] --- F2["Pin 2"] --- F3["Pin 3"] --- F4["Pin 4"] --- F5["Pin 5"]
+          F6["Pin 6"] --- F7["Pin 7"] --- F8["Pin 8"] --- F9["Pin 9"]
+          
+          F1 -.- FT1["T(+)/RS-485 B(+)"]
+          F2 -.- FT2["T(-)/RS-485 A(-)"]
+          F5 -.- FT5["Ground"]
+          
+          style F1 fill:#bbf,stroke:#33f,stroke-width:2px
+          style F2 fill:#fbb,stroke:#f33,stroke-width:2px
+          style F5 fill:#bbb,stroke:#333,stroke-width:2px
+      end
+      
+      subgraph "DB9 Male Connector (ARES Side)"
+          direction TB
+          M1["Pin 1"] --- M2["Pin 2"] --- M3["Pin 3"] --- M4["Pin 4"] --- M5["Pin 5"]
+          M6["Pin 6"] --- M7["Pin 7"] --- M8["Pin 8"] --- M9["Pin 9"]
+          
+          M3 -.- MT3["T(-)/RS-485 A(-)"]
+          M4 -.- MT4["T(+)/RS-485 B(+)"]
+          M7 -.- MT7["Ground"]
+          
+          style M3 fill:#fbb,stroke:#f33,stroke-width:2px
+          style M4 fill:#bbf,stroke:#33f,stroke-width:2px
+          style M7 fill:#bbb,stroke:#333,stroke-width:2px
+      end
+  ```
   
   **PC Side (DB9 Female):**
   | DB9 Pin | Function      |

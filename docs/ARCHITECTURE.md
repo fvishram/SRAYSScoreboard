@@ -8,14 +8,22 @@ SRAYSScoreboard consists of several key components that work together:
 
 ```mermaid
 flowchart LR
-    A[Serial Port Connection\nRS-485] --> B[AresDataHandler\nData Parser]
-    B --> C[Scoreboard\nMain UI]
-    C --> D[OBSScoreboard\nStreaming UI]
+    A["Serial Port Connection
+    RS-485"] --> B["AresDataHandler
+    Data Parser"]
+    B --> C["Scoreboard
+    Main UI"]
+    C --> D["OBSScoreboard
+    Streaming UI"]
+    C --> E["Settings
+    Configuration UI"]
+    E --> C
     
     style A fill:#f9f,stroke:#333,stroke-width:2px
     style B fill:#bbf,stroke:#33f,stroke-width:2px
     style C fill:#bfb,stroke:#3a3,stroke-width:2px
     style D fill:#fbb,stroke:#a33,stroke-width:2px
+    style E fill:#fdb,stroke:#a63,stroke-width:2px
 ```
 
 The diagram above shows the data flow between the main components of the application.
@@ -26,6 +34,7 @@ The diagram above shows the data flow between the main components of the applica
 2. **AresDataHandler**: Processes and parses the data received from the timing system
 3. **Scoreboard Form**: The main user interface that displays the scoreboard data
 4. **OBSScoreboard Form**: A secondary interface optimized for streaming with OBS
+5. **Settings Form**: A tabbed dialog for configuring the application, including COM port selection, color customization, and pool lane configuration
 
 ## Data Flow
 
@@ -63,6 +72,7 @@ The main form that:
 
 Key methods:
 - `SafeUpdateScoreboard()`: Updates the UI with the latest data, ensuring thread safety
+- `ApplySettings(Settings formSettings)`: Applies settings from the Settings form
 - Various color customization methods
 - Context menu handlers for settings and customization
 
@@ -72,6 +82,20 @@ A secondary form optimized for OBS capture that:
 - Provides a streamlined interface for broadcasting
 - Shares the same data source as the main scoreboard
 - Updates automatically when the main scoreboard receives new data
+- Inherits settings from the main scoreboard
+
+### Settings
+
+A tabbed dialog form that:
+- Provides a centralized interface for application configuration
+- Allows COM port selection with a dropdown list and refresh option
+- Offers comprehensive color customization for all UI elements
+- Enables configuration of pool lanes (8 or 10)
+
+Key methods:
+- `LoadSettings()`: Loads saved settings from application properties
+- `PopulateComPorts()`: Populates the COM port dropdown with available ports
+- Various color customization methods
 
 ## Threading Model
 
@@ -86,10 +110,15 @@ This ensures that the UI remains responsive even when processing large amounts o
 
 The application uses the .NET Settings framework to persist user preferences:
 - COM port settings
-- Color customization options
+- Color customization options (background, text, and individual element colors)
+- Pool lane configuration (8 or 10 lanes)
 - Window positions and sizes
 
-Settings are automatically saved when changed and loaded when the application starts.
+Settings are managed through both:
+- The dedicated Settings dialog with a tabbed interface
+- Context menu options for quick access to common settings
+
+All settings are automatically saved when changed and loaded when the application starts.
 
 ## Error Handling
 
