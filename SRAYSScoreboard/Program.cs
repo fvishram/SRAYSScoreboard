@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 Faisal Vishram, Silver Rays Swim Club
+﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,16 +26,29 @@ using System.Windows.Forms;
 
 namespace SRAYSScoreboard
 {
+    /// <summary>
+    /// The main program class that serves as the entry point for the application.
+    /// </summary>
     internal static class Program
     {
         /// <summary>
         /// The main entry point for the application.
+        /// This method initializes the Windows Forms application and runs the main Scoreboard form.
         /// </summary>
+        /// <remarks>
+        /// The STAThread attribute indicates that the COM threading model for the application is single-threaded apartment.
+        /// This is required for Windows Forms applications.
+        /// </remarks>
         [STAThread]
         static void Main()
         {
+            // Enable visual styles for the application (modern Windows look and feel)
             Application.EnableVisualStyles();
+            
+            // Set the default text rendering to be compatible with GDI+
             Application.SetCompatibleTextRenderingDefault(false);
+            
+            // Create and run the main Scoreboard form
             Application.Run(new Scoreboard());
         }
     }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 Faisal Vishram, Silver Rays Swim Club
+﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,17 +30,37 @@ using System.Windows.Forms;
 
 namespace SRAYSScoreboard
 {
+    /// <summary>
+    /// Settings form that allows the user to configure the application.
+    /// Currently, this form only handles the COM port configuration for
+    /// the serial connection to the Omega ARES 21 timing system.
+    /// </summary>
     public partial class Settings : Form
     {
+        /// <summary>
+        /// Initializes a new instance of the Settings form.
+        /// </summary>
         public Settings()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Stores the COM port value entered by the user.
+        /// </summary>
         private string comPort = "";
 
+        /// <summary>
+        /// Gets or sets the COM port value.
+        /// This property is used by the main Scoreboard form to configure the serial port.
+        /// </summary>
         public string COMPort { get => comPort; set => comPort = value; }
 
+        /// <summary>
+        /// Handles the OK button click event. Saves the COM port value and closes the form.
+        /// </summary>
+        /// <param name="sender">The source of the event</param>
+        /// <param name="e">Event data</param>
         private void buttonOK_Click(object sender, EventArgs e)
         {
             COMPort = textBoxCOMPort.Text;
