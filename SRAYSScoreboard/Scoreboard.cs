@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,16 @@ namespace SRAYSScoreboard
     {
         /// <summary>Handler for processing data from the timing system</summary>
         private AresDataHandler scoreboardData = new AresDataHandler();
+        
+        /// <summary>
+        /// Gets the data handler used by this scoreboard.
+        /// This allows other forms to access the same data.
+        /// </summary>
+        /// <returns>The AresDataHandler instance</returns>
+        public AresDataHandler GetDataHandler()
+        {
+            return scoreboardData;
+        }
         
         /// <summary>Collection of labels for displaying swimmer times</summary>
         private List<Label> timeLabels = new List<Label>();
@@ -99,9 +109,6 @@ namespace SRAYSScoreboard
             
             // Insert the COM port menu between Settings and Exit
             contextMenuSettings.Items.Insert(1, comPortMenu);
-            
-            // Create and insert the Colors menu
-            InitializeColorsMenu();
         }
         
         /// <summary>
@@ -378,12 +385,33 @@ namespace SRAYSScoreboard
         /// <param name="e">Event data</param>
         private void RefreshComPorts_Click(object sender, EventArgs e)
         {
-            // Remove the existing COM port menu
+            // Get the existing COM port menu
             ToolStripMenuItem comPortMenu = (ToolStripMenuItem)contextMenuSettings.Items[1];
-            contextMenuSettings.Items.RemoveAt(1);
             
-            // Reinitialize the COM port menu
-            InitializeComPortMenu();
+            // Clear existing port items, but keep the separator and refresh option
+            while (comPortMenu.DropDownItems.Count > 2)
+            {
+                comPortMenu.DropDownItems.RemoveAt(0);
+            }
+            
+            // Get available COM ports
+            string[] availablePorts = SerialPort.GetPortNames();
+            
+            // Add each available port to the submenu
+            foreach (string port in availablePorts)
+            {
+                ToolStripMenuItem portItem = new ToolStripMenuItem(port);
+                portItem.Click += ComPortMenuItem_Click;
+                
+                // Check the current port
+                if (port == serialPort.PortName)
+                {
+                    portItem.Checked = true;
+                }
+                
+                // Insert at the beginning, before the separator
+                comPortMenu.DropDownItems.Insert(0, portItem);
+            }
         }
 
         /// <summary>
@@ -414,6 +442,9 @@ namespace SRAYSScoreboard
                 // Log the error but continue without the timing system
                 Console.WriteLine($"Error opening serial port: {ex.Message}");
             }
+            
+            // Initialize the Colors menu
+            InitializeColorsMenu();
             
             // Load saved color settings
             LoadColorSettings();

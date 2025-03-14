@@ -1,4 +1,4 @@
-﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
+﻿﻿﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ namespace SRAYSScoreboard
         /// <summary>
         /// The main entry point for the application.
         /// This method initializes the Windows Forms application and runs the main Scoreboard form.
+        /// It also creates a secondary OBS scoreboard window for streaming.
         /// </summary>
         /// <remarks>
         /// The STAThread attribute indicates that the COM threading model for the application is single-threaded apartment.
@@ -48,8 +49,31 @@ namespace SRAYSScoreboard
             // Set the default text rendering to be compatible with GDI+
             Application.SetCompatibleTextRenderingDefault(false);
             
-            // Create and run the main Scoreboard form
-            Application.Run(new Scoreboard());
+            // Create the main scoreboard form
+            Scoreboard mainScoreboard = new Scoreboard();
+            
+            // Create the shared data handler from the main scoreboard
+            AresDataHandler dataHandler = mainScoreboard.GetDataHandler();
+            
+            // Create the OBS scoreboard form with the shared data handler
+            OBSScoreboard obsScoreboard = new OBSScoreboard(dataHandler);
+            
+            // Set up the OBS scoreboard window properties
+            obsScoreboard.Text = "SRAYS OBS Scoreboard";
+            obsScoreboard.FormBorderStyle = FormBorderStyle.Sizable;
+            obsScoreboard.StartPosition = FormStartPosition.Manual;
+            obsScoreboard.Location = new System.Drawing.Point(100, 100);
+            obsScoreboard.Size = new System.Drawing.Size(960, 540);
+            obsScoreboard.TopMost = false;
+            
+            // Show the OBS scoreboard window
+            obsScoreboard.Show();
+            
+            // Run the main scoreboard form (this will block until the main form is closed)
+            Application.Run(mainScoreboard);
+            
+            // When the main form is closed, close the OBS form as well
+            obsScoreboard.Close();
         }
     }
 }
