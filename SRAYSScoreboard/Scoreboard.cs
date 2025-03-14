@@ -84,11 +84,106 @@ namespace SRAYSScoreboard
             nameLabels.AddRange(new List<Label>() { labelName1, labelName2, labelName3, labelName4, labelName5, labelName6, labelName7, labelName8, labelName9, labelName10 });
             placeLabels.AddRange(new List<Label>() { labelPlace1, labelPlace2, labelPlace3, labelPlace4, labelPlace5, labelPlace6, labelPlace7, labelPlace8, labelPlace9, labelPlace10 });
             
-            // Initialize the COM port submenu
-            InitializeComPortMenu();
-            
             // Apply the pool configuration based on saved settings
             UpdatePoolLaneVisibility(Properties.Settings.Default.PoolLaneCount);
+            
+            // Set up keyboard handling for the form
+            this.KeyPreview = true;
+            this.KeyDown += Scoreboard_KeyDown;
+        }
+        
+        /// <summary>
+        /// Handles the form's KeyDown event.
+        /// Opens the settings dialog when F2 is pressed.
+        /// </summary>
+        private void Scoreboard_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Open settings dialog when F2 is pressed
+            if (e.KeyCode == Keys.F2)
+            {
+                OpenSettingsDialog();
+                e.Handled = true;
+            }
+            // Close application when Escape is pressed
+            else if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+                e.Handled = true;
+            }
+        }
+        
+        /// <summary>
+        /// Opens the settings dialog and applies the settings if OK is clicked.
+        /// </summary>
+        private void OpenSettingsDialog()
+        {
+            Settings formSettings = new Settings();
+            
+            // Show the settings dialog
+            if (formSettings.ShowDialog() == DialogResult.OK)
+            {
+                ApplySettings(formSettings);
+            }
+        }
+        
+        /// <summary>
+        /// Applies settings from the settings form to the scoreboard.
+        /// </summary>
+        /// <param name="formSettings">The settings form with the new settings</param>
+        public void ApplySettings(Settings formSettings)
+        {
+            try
+            {
+                // Apply COM port settings
+                if (!string.IsNullOrEmpty(formSettings.COMPort))
+                {
+                    // Close the port if it's open
+                    if (serialPort.IsOpen)
+                    {
+                        serialPort.Close();
+                    }
+                    
+                    // Update the port name
+                    serialPort.PortName = formSettings.COMPort;
+                    
+                    // Try to open the new port
+                    if (Array.Exists(System.IO.Ports.SerialPort.GetPortNames(), port => port == serialPort.PortName))
+                    {
+                        serialPort.Open();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"COM port {serialPort.PortName} not found. Please check your connection and settings.", 
+                            "Port Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                
+                // Apply color settings
+                this.BackColor = formSettings.BackgroundColor;
+                tableLayoutPanel1.BackColor = formSettings.BackgroundColor;
+                
+                // Apply individual color settings
+                ApplyHeaderLabelsColor(formSettings.HeaderLabelsColor);
+                ApplyColumnHeadersColor(formSettings.ColumnHeadersColor);
+                ApplyNameLabelsColor(formSettings.NameLabelsColor);
+                ApplyTimeLabelsColor(formSettings.TimeLabelsColor);
+                ApplyPlaceLabelsColor(formSettings.PlaceLabelsColor);
+                ApplyLaneLabelsColor(formSettings.LaneLabelsColor);
+                
+                // Apply pool configuration
+                UpdatePoolLaneVisibility(formSettings.PoolLaneCount);
+                
+                // Update the OBS scoreboard if it exists
+                if (obsScoreboard != null)
+                {
+                    obsScoreboard.UpdatePoolLaneVisibility(formSettings.PoolLaneCount);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error applying settings: {ex.Message}", 
+                    "Settings Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         
         /// <summary>
@@ -459,12 +554,6 @@ namespace SRAYSScoreboard
                 Console.WriteLine($"Error opening serial port: {ex.Message}");
             }
             
-            // Initialize the Colors menu
-            InitializeColorsMenu();
-            
-            // Initialize the Pool Configuration menu
-            InitializePoolConfigMenu();
-            
             // Load saved color settings
             LoadColorSettings();
         }
@@ -720,49 +809,6 @@ namespace SRAYSScoreboard
             this.Close();
         }
 
-        /// <summary>
-        /// Handles the Settings menu item click event. Opens the settings dialog
-        /// and applies the COM port setting to the serial port.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void toolStripMenuSettings_Click(object sender, EventArgs e)
-        {
-            Settings formSettings = new Settings();
-            formSettings.ShowDialog();
-            
-            // Only proceed if the user entered a COM port
-            if (!string.IsNullOrEmpty(formSettings.COMPort))
-            {
-                try
-                {
-                    // Close the port if it's open
-                    if (serialPort.IsOpen)
-                    {
-                        serialPort.Close();
-                    }
-                    
-                    // Update the port name
-                    serialPort.PortName = formSettings.COMPort;
-                    
-                    // Try to open the new port
-                    if (Array.Exists(System.IO.Ports.SerialPort.GetPortNames(), port => port == serialPort.PortName))
-                    {
-                        serialPort.Open();
-                    }
-                    else
-                    {
-                        MessageBox.Show($"COM port {serialPort.PortName} not found. Please check your connection and settings.", 
-                            "Port Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error configuring serial port: {ex.Message}", 
-                        "Serial Port Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
         
         /// <summary>
         /// Handles the Background Color menu item click event. Opens a color dialog

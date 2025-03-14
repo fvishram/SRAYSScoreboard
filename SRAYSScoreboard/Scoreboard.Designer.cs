@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 Faisal Vishram, Silver Rays Swim Club
+﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -717,7 +717,7 @@ namespace SRAYSScoreboard
             this.BackColor = System.Drawing.Color.Black;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1920, 1080);
-            this.ContextMenuStrip = this.contextMenuSettings;
+            // Remove context menu from the form
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.labelEvent);
             this.Controls.Add(this.labelTime);

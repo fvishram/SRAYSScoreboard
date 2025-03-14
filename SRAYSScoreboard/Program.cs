@@ -69,14 +69,31 @@ namespace SRAYSScoreboard
             // Set the OBS scoreboard reference in the main scoreboard
             mainScoreboard.SetOBSScoreboard(obsScoreboard);
             
-            // Show the OBS scoreboard window
-            obsScoreboard.Show();
+            // Show the settings dialog first
+            Settings settingsForm = new Settings();
+            settingsForm.StartPosition = FormStartPosition.CenterScreen;
             
-            // Run the main scoreboard form (this will block until the main form is closed)
-            Application.Run(mainScoreboard);
-            
-            // When the main form is closed, close the OBS form as well
-            obsScoreboard.Close();
+            if (settingsForm.ShowDialog() == DialogResult.OK)
+            {
+                // Apply settings to the main scoreboard
+                mainScoreboard.ApplySettings(settingsForm);
+                
+                // Show the OBS scoreboard window
+                obsScoreboard.Show();
+                
+                // Run the main scoreboard form (this will block until the main form is closed)
+                Application.Run(mainScoreboard);
+                
+                // When the main form is closed, close the OBS form as well
+                obsScoreboard.Close();
+            }
+            else
+            {
+                // If user cancels settings, still run the application with default settings
+                obsScoreboard.Show();
+                Application.Run(mainScoreboard);
+                obsScoreboard.Close();
+            }
         }
     }
 }
