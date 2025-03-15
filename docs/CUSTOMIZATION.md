@@ -76,6 +76,40 @@ Configure the number of lanes displayed on the scoreboard and lane numbering:
   - Standard (1-10) - Traditional lane numbering from 1 to 10
   - Alternative (0-9) - Zero-based lane numbering from 0 to 9, which may be required for certain competitions or timing systems
 
+#### Lane Numbering Details
+
+The lane numbering feature allows you to switch between two different numbering schemes for the lanes displayed on the scoreboard:
+
+```mermaid
+graph LR
+    subgraph "Standard Numbering (1-10)"
+        L1[Lane 1] --- L2[Lane 2] --- L3[Lane 3] --- L4["..."] --- L5[Lane 10]
+    end
+    
+    subgraph "Alternative Numbering (0-9)"
+        A0[Lane 0] --- A1[Lane 1] --- A2[Lane 2] --- A3["..."] --- A4[Lane 9]
+    end
+    
+    style L1 fill:#bfb,stroke:#3a3,stroke-width:2px
+    style A0 fill:#fbb,stroke:#a33,stroke-width:2px
+```
+
+**When to use each numbering scheme:**
+
+1. **Standard (1-10) Numbering**:
+   - Use for most competitions where lanes are traditionally numbered starting from 1
+   - This is the default setting and matches the physical lane numbering in most pools
+   - The data from the timing system is displayed directly with lane 1 data shown in lane 1, lane 2 data in lane 2, etc.
+
+2. **Alternative (0-9) Numbering**:
+   - Use for competitions or timing systems that use zero-based lane numbering
+   - Some timing systems or competition formats require lanes to be numbered from 0 to 9 instead of 1 to 10
+   - When this setting is enabled:
+     - Lane 0 displays data from what would be lane 10 in the standard numbering
+     - Lanes 1-9 display data from lanes 1-9 respectively
+
+**Important Note**: Changing the lane numbering setting only affects how the lanes are labeled and how the data is displayed in the UI. It does not change how the data is received or processed from the timing system. The timing system always sends data using lanes 1-10, and the application maps this data to the appropriate display positions based on your selected numbering scheme.
+
 ## Context Menu Customization
 
 SRAYSScoreboard also offers customization options through its context menu. Right-click anywhere on the scoreboard to access these options.

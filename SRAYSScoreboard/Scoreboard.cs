@@ -496,6 +496,7 @@ namespace SRAYSScoreboard
             else
                 labelEvent.Text = scoreboardData.EventName;
 
+            // Update swimmer data with proper lane mapping based on numbering setting
             for(int i = 0; i < nameLabels.Count; i++) 
             {
                 if (nameLabels[i].InvokeRequired)
@@ -503,7 +504,11 @@ namespace SRAYSScoreboard
                     nameLabels[i].Invoke(new Action(() => { SafeUpdateScoreboard(); }));
                 }
                 else
-                    nameLabels[i].Text = scoreboardData.SwimmerNames[i];
+                {
+                    // Get the correct data index based on lane numbering setting
+                    int dataIndex = GetDataIndexForDisplayIndex(i);
+                    nameLabels[i].Text = scoreboardData.SwimmerNames[dataIndex];
+                }
             }
 
             for (int i = 0; i < placeLabels.Count; i++)
@@ -513,7 +518,11 @@ namespace SRAYSScoreboard
                     placeLabels[i].Invoke(new Action(() => { SafeUpdateScoreboard(); }));
                 }
                 else
-                    placeLabels[i].Text = scoreboardData.SwimmerPlaces[i];
+                {
+                    // Get the correct data index based on lane numbering setting
+                    int dataIndex = GetDataIndexForDisplayIndex(i);
+                    placeLabels[i].Text = scoreboardData.SwimmerPlaces[dataIndex];
+                }
             }
 
             for (int i = 0; i < timeLabels.Count; i++)
@@ -523,9 +532,40 @@ namespace SRAYSScoreboard
                     timeLabels[i].Invoke(new Action(() => { SafeUpdateScoreboard(); }));
                 }
                 else
-                    timeLabels[i].Text = scoreboardData.SwimmerTimes[i];
+                {
+                    // Get the correct data index based on lane numbering setting
+                    int dataIndex = GetDataIndexForDisplayIndex(i);
+                    timeLabels[i].Text = scoreboardData.SwimmerTimes[dataIndex];
+                }
             }
+        }
 
+        /// <summary>
+        /// Maps a display index (position in the UI) to the correct data index based on lane numbering setting.
+        /// </summary>
+        /// <param name="displayIndex">The index of the label in the UI (0-9)</param>
+        /// <returns>The index to use for accessing data from the arrays (0-9)</returns>
+        private int GetDataIndexForDisplayIndex(int displayIndex)
+        {
+            if (!useLaneNumberingZeroToNine)
+            {
+                // Standard 1-10 numbering: display index matches data index
+                return displayIndex;
+            }
+            else
+            {
+                // 0-9 numbering: need to remap
+                if (displayIndex == 0)
+                {
+                    // Lane 0 should show lane 10 data (index 9)
+                    return 9;
+                }
+                else
+                {
+                    // Lanes 1-9 should show lanes 1-9 data (indices 0-8)
+                    return displayIndex - 1;
+                }
+            }
         }
 
         /// <summary>

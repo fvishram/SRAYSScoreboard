@@ -144,6 +144,45 @@ The architecture allows for several extension points:
 - The UI can be extended with additional visualization options
 - Support for different timing systems could be added by implementing alternative data handlers
 
+## Lane Numbering Implementation
+
+The application supports two lane numbering schemes:
+
+1. **Standard (1-10)**: Traditional lane numbering from 1 to 10
+2. **Alternative (0-9)**: Zero-based lane numbering from 0 to 9
+
+This feature is implemented as follows:
+
+```mermaid
+flowchart TD
+    A[User selects lane numbering scheme] --> B[Setting stored in UseLaneNumberingZeroToNine]
+    B --> C[UpdateLaneNumbering method called]
+    C --> D[Lane labels updated to show 1-10 or 0-9]
+    B --> E[SafeUpdateScoreboard/UpdateScoreboard methods]
+    E --> F[GetDataIndexForDisplayIndex maps UI positions to data indices]
+    F --> G[Swimmer data displayed in correct lanes]
+    
+    style B fill:#bbf,stroke:#33f,stroke-width:2px
+    style C fill:#bfb,stroke:#3a3,stroke-width:2px
+    style F fill:#fdb,stroke:#a63,stroke-width:2px
+```
+
+### Key Implementation Details
+
+1. **Data Storage**: The AresDataHandler always processes and stores data using 1-10 lane numbering internally. The arrays that store swimmer data (swimmerNames, swimmerPlaces, swimmerTimes) are 0-indexed, with indices 0-9 corresponding to lanes 1-10.
+
+2. **UI Display**: When the lane numbering setting is changed, the `UpdateLaneNumbering()` method updates the lane number labels in the UI to display either 1-10 or 0-9.
+
+3. **Data Mapping**: The critical component is the `GetDataIndexForDisplayIndex()` method, which maps UI display positions to the correct data indices:
+   - For standard 1-10 numbering: The display index directly maps to the data index
+   - For alternative 0-9 numbering: 
+     - Lane 0 in the UI shows data for lane 10 (index 9)
+     - Lanes 1-9 in the UI show data for lanes 1-9 (indices 0-8)
+
+4. **Consistency**: This mapping is implemented consistently in both the main Scoreboard and the OBSScoreboard to ensure that data is displayed correctly in both interfaces.
+
+This approach allows the application to maintain a consistent internal data model while providing flexible display options for different competition requirements.
+
 ## Performance Considerations
 
 - The application is designed to handle real-time data with minimal latency
