@@ -223,6 +223,82 @@ The diagram above shows the data flow from the timing system to the application 
    - Fine-tune the similarity, smoothness, and key color spill reduction settings
    - Use the preview to check the results
 
+## Screen Saver Issues
+
+### Screen Saver Not Activating
+
+**Symptoms:**
+- Screen saver doesn't activate after the specified inactivity period
+- Manual activation with F3 doesn't work
+
+**Solutions:**
+1. **Check Settings**
+   - Open the Settings dialog by pressing F2
+   - Go to the Screen Saver tab
+   - Verify that the inactivity timer is set to a reasonable value (e.g., 5 minutes)
+   - Ensure that "Manual Activation (F3)" is enabled if you want to use that feature
+
+2. **Check for Activity**
+   - The screen saver won't activate if there's any keyboard or mouse activity
+   - Ensure there are no stuck keys or a mouse that's moving slightly due to vibration
+
+3. **Restart Application**
+   - Close and reopen the application to reset the inactivity timer
+   - This can resolve issues with the timer not starting correctly
+
+### Screen Saver Won't Exit
+
+**Symptoms:**
+- Screen saver remains active even when pressing keys or moving the mouse
+- Screen saver doesn't exit when new data is received
+
+**Solutions:**
+1. **Check Exit Settings**
+   - Open the Settings dialog by pressing F2
+   - Go to the Screen Saver tab
+   - Ensure "Exit on Key Press" is enabled if you want to exit with keyboard/mouse
+   - Ensure "Exit on Data Received" is enabled if you want to exit when new data arrives
+
+2. **Force Close**
+   - If the screen saver is unresponsive, press Alt+F4 to force close it
+   - If that doesn't work, use Ctrl+Alt+Delete to open Task Manager and end the process
+
+3. **Check for Input Issues**
+   - Verify that your keyboard and mouse are functioning correctly
+   - Try connecting a different keyboard or mouse if available
+
+### Display Problems
+
+**Symptoms:**
+- Screen saver appears distorted or with wrong colors
+- Custom logo doesn't display correctly
+- Scrolling message is not visible or appears garbled
+- Text is difficult to read against the background color
+
+**Solutions:**
+1. **Check Background Color**
+   - Open the Settings dialog by pressing F2
+   - Go to the Screen Saver tab
+   - Adjust the background color to ensure good contrast with text and images
+   - Avoid using very bright or very light background colors that might make text difficult to read
+   - For best visibility, use dark background colors like black, navy blue, or dark gray
+
+2. **Verify Logo Path**
+   - If using the "Display Logo" option, ensure the path to the logo file is correct
+   - Verify the logo file exists and is not corrupted
+   - Use a different image format if the current one isn't displaying correctly (try PNG or JPG)
+   - Choose logo images with good contrast against your selected background color
+
+3. **Check Scrolling Message**
+   - If using the "Scrolling Message" option, ensure the message text is not empty
+   - Keep the message reasonably short to ensure it displays correctly
+   - If the message is difficult to read, try changing the background color for better contrast
+
+4. **Text Visibility Issues**
+   - The application automatically selects text colors that contrast with the background
+   - If text is still difficult to read, try a different background color
+   - For digital displays that will show the screen saver for extended periods, avoid bright colors that might cause screen burn-in
+
 ## Settings Dialog Issues
 
 ### Settings Not Saving

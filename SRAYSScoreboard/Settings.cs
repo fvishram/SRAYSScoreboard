@@ -1,4 +1,4 @@
-﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -93,6 +93,46 @@ namespace SRAYSScoreboard
         public bool UseLaneNumberingZeroToNine { get; private set; }
 
         /// <summary>
+        /// Gets or sets the screen saver display option.
+        /// </summary>
+        public string ScreenSaverDisplayOption { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the inactivity timer in minutes.
+        /// </summary>
+        public int ScreenSaverInactivityMinutes { get; private set; }
+
+        /// <summary>
+        /// Gets or sets whether manual activation with F3 is enabled.
+        /// </summary>
+        public bool ScreenSaverManualActivation { get; private set; }
+
+        /// <summary>
+        /// Gets or sets whether the screen saver should exit when data is received.
+        /// </summary>
+        public bool ScreenSaverExitOnData { get; private set; }
+
+        /// <summary>
+        /// Gets or sets whether the screen saver should exit on any key press.
+        /// </summary>
+        public bool ScreenSaverExitOnKeyPress { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the logo path for the screen saver.
+        /// </summary>
+        public string ScreenSaverLogoPath { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the scrolling message for the screen saver.
+        /// </summary>
+        public string ScreenSaverScrollingMessage { get; private set; }
+        
+        /// <summary>
+        /// Gets or sets the background color for the screen saver.
+        /// </summary>
+        public Color ScreenSaverBackgroundColor { get; private set; }
+
+        /// <summary>
         /// Reference to the main scoreboard form.
         /// </summary>
         private Scoreboard mainScoreboard;
@@ -146,6 +186,57 @@ namespace SRAYSScoreboard
             // Load lane numbering setting
             UseLaneNumberingZeroToNine = Properties.Settings.Default.UseLaneNumberingZeroToNine;
             checkBoxZeroToNine.Checked = UseLaneNumberingZeroToNine;
+
+            // Load screen saver settings
+            ScreenSaverDisplayOption = Properties.Settings.Default.ScreenSaverDisplayOption;
+            ScreenSaverInactivityMinutes = Properties.Settings.Default.ScreenSaverInactivityMinutes;
+            ScreenSaverManualActivation = Properties.Settings.Default.ScreenSaverManualActivation;
+            ScreenSaverExitOnData = Properties.Settings.Default.ScreenSaverExitOnData;
+            ScreenSaverExitOnKeyPress = Properties.Settings.Default.ScreenSaverExitOnKeyPress;
+            ScreenSaverLogoPath = Properties.Settings.Default.ScreenSaverLogoPath;
+            ScreenSaverScrollingMessage = Properties.Settings.Default.ScreenSaverScrollingMessage;
+            ScreenSaverBackgroundColor = Properties.Settings.Default.ScreenSaverBackgroundColor;
+
+            // Set the screen saver display option radio buttons
+            switch (ScreenSaverDisplayOption)
+            {
+                case "AsciiArt":
+                    radioButtonAsciiArt.Checked = true;
+                    break;
+                case "BlankScreen":
+                    radioButtonBlankScreen.Checked = true;
+                    break;
+                case "Logo":
+                    radioButtonLogo.Checked = true;
+                    break;
+                case "ScrollingMessage":
+                    radioButtonScrollingMessage.Checked = true;
+                    break;
+                default:
+                    radioButtonAsciiArt.Checked = true;
+                    break;
+            }
+
+            // Set the inactivity timer
+            numericUpDownInactivityMinutes.Value = ScreenSaverInactivityMinutes;
+
+            // Set the manual activation checkbox
+            checkBoxManualActivation.Checked = ScreenSaverManualActivation;
+
+            // Set the exit on data checkbox
+            checkBoxExitOnData.Checked = ScreenSaverExitOnData;
+
+            // Set the exit on key press checkbox
+            checkBoxExitOnKeyPress.Checked = ScreenSaverExitOnKeyPress;
+
+            // Set the logo path
+            textBoxLogoPath.Text = ScreenSaverLogoPath;
+
+            // Set the scrolling message
+            textBoxScrollingMessage.Text = ScreenSaverScrollingMessage;
+
+            // Update the visibility of the logo path and scrolling message controls
+            UpdateScreenSaverOptionControls();
         }
 
         /// <summary>
@@ -252,6 +343,33 @@ namespace SRAYSScoreboard
             // Save the lane numbering setting
             UseLaneNumberingZeroToNine = checkBoxZeroToNine.Checked;
             Properties.Settings.Default.UseLaneNumberingZeroToNine = UseLaneNumberingZeroToNine;
+
+            // Save the screen saver settings
+            // Determine which display option is selected
+            if (radioButtonAsciiArt.Checked)
+                ScreenSaverDisplayOption = "AsciiArt";
+            else if (radioButtonBlankScreen.Checked)
+                ScreenSaverDisplayOption = "BlankScreen";
+            else if (radioButtonLogo.Checked)
+                ScreenSaverDisplayOption = "Logo";
+            else if (radioButtonScrollingMessage.Checked)
+                ScreenSaverDisplayOption = "ScrollingMessage";
+
+            ScreenSaverInactivityMinutes = (int)numericUpDownInactivityMinutes.Value;
+            ScreenSaverManualActivation = checkBoxManualActivation.Checked;
+            ScreenSaverExitOnData = checkBoxExitOnData.Checked;
+            ScreenSaverExitOnKeyPress = checkBoxExitOnKeyPress.Checked;
+            ScreenSaverLogoPath = textBoxLogoPath.Text;
+            ScreenSaverScrollingMessage = textBoxScrollingMessage.Text;
+
+            Properties.Settings.Default.ScreenSaverDisplayOption = ScreenSaverDisplayOption;
+            Properties.Settings.Default.ScreenSaverInactivityMinutes = ScreenSaverInactivityMinutes;
+            Properties.Settings.Default.ScreenSaverManualActivation = ScreenSaverManualActivation;
+            Properties.Settings.Default.ScreenSaverExitOnData = ScreenSaverExitOnData;
+            Properties.Settings.Default.ScreenSaverExitOnKeyPress = ScreenSaverExitOnKeyPress;
+            Properties.Settings.Default.ScreenSaverLogoPath = ScreenSaverLogoPath;
+            Properties.Settings.Default.ScreenSaverScrollingMessage = ScreenSaverScrollingMessage;
+            Properties.Settings.Default.ScreenSaverBackgroundColor = ScreenSaverBackgroundColor;
 
             // Save all settings
             Properties.Settings.Default.Save();
@@ -571,6 +689,84 @@ namespace SRAYSScoreboard
             
             // Auto-apply the change to all scoreboards
             ApplyChangesToScoreboards();
+        }
+
+        /// <summary>
+        /// Handles the radio button change for screen saver display options.
+        /// </summary>
+        private void radioButtonScreenSaverOption_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateScreenSaverOptionControls();
+        }
+
+        /// <summary>
+        /// Updates the visibility of the logo path and scrolling message controls based on the selected display option.
+        /// </summary>
+        private void UpdateScreenSaverOptionControls()
+        {
+            // Hide all option-specific controls first
+            labelLogoPath.Visible = false;
+            textBoxLogoPath.Visible = false;
+            buttonSelectLogo.Visible = false;
+            labelScrollingMessage.Visible = false;
+            textBoxScrollingMessage.Visible = false;
+
+            // Show the controls for the selected option
+            if (radioButtonLogo.Checked)
+            {
+                labelLogoPath.Visible = true;
+                textBoxLogoPath.Visible = true;
+                buttonSelectLogo.Visible = true;
+            }
+            else if (radioButtonScrollingMessage.Checked)
+            {
+                labelScrollingMessage.Visible = true;
+                textBoxScrollingMessage.Visible = true;
+            }
+        }
+
+        /// <summary>
+        /// Handles the button click for selecting a logo file.
+        /// </summary>
+        private void buttonSelectLogo_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Image Files|*.png;*.jpg;*.jpeg;*.gif;*.bmp|All Files|*.*";
+                openFileDialog.Title = "Select Logo Image";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    textBoxLogoPath.Text = openFileDialog.FileName;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Handles the Screen Saver Background Color button click event.
+        /// </summary>
+        private void buttonScreenSaverBackgroundColor_Click(object sender, EventArgs e)
+        {
+            using (ColorDialog colorDialog = new ColorDialog())
+            {
+                // Use the current color as the initial color
+                colorDialog.Color = ScreenSaverBackgroundColor;
+                colorDialog.FullOpen = true;
+
+                if (colorDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Update the screen saver background color
+                    ScreenSaverBackgroundColor = colorDialog.Color;
+                    Properties.Settings.Default.ScreenSaverBackgroundColor = ScreenSaverBackgroundColor;
+                    
+                    // Save the setting
+                    Properties.Settings.Default.Save();
+                    
+                    // Show a confirmation message
+                    MessageBox.Show("Screen saver background color updated.", 
+                        "Color Updated", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
+﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -105,6 +105,7 @@ namespace SRAYSScoreboard
             this.tabControl.Controls.Add(this.tabPageConnection);
             this.tabControl.Controls.Add(this.tabPageColors);
             this.tabControl.Controls.Add(this.tabPagePoolConfig);
+            this.tabControl.Controls.Add(this.tabPageScreenSaver);
             this.tabControl.Location = new System.Drawing.Point(12, 12);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
@@ -394,6 +395,224 @@ namespace SRAYSScoreboard
             this.buttonLaneLabelsColor.UseVisualStyleBackColor = true;
             this.buttonLaneLabelsColor.Click += new System.EventHandler(this.buttonLaneLabelsColor_Click);
             
+            // tabPageScreenSaver
+            this.tabPageScreenSaver = new System.Windows.Forms.TabPage();
+            this.tabPageScreenSaver.Controls.Add(this.groupBoxDisplayOptions);
+            this.tabPageScreenSaver.Controls.Add(this.groupBoxActivation);
+            this.tabPageScreenSaver.Controls.Add(this.groupBoxBehavior);
+            this.tabPageScreenSaver.Controls.Add(this.textBoxScrollingMessage);
+            this.tabPageScreenSaver.Controls.Add(this.labelScrollingMessage);
+            this.tabPageScreenSaver.Controls.Add(this.buttonSelectLogo);
+            this.tabPageScreenSaver.Controls.Add(this.labelLogoPath);
+            this.tabPageScreenSaver.Controls.Add(this.textBoxLogoPath);
+            this.tabPageScreenSaver.Location = new System.Drawing.Point(4, 22);
+            this.tabPageScreenSaver.Name = "tabPageScreenSaver";
+            this.tabPageScreenSaver.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageScreenSaver.Size = new System.Drawing.Size(359, 245);
+            this.tabPageScreenSaver.TabIndex = 3;
+            this.tabPageScreenSaver.Text = "Screen Saver";
+            this.tabPageScreenSaver.UseVisualStyleBackColor = true;
+            
+            // groupBoxDisplayOptions
+            this.groupBoxDisplayOptions = new System.Windows.Forms.GroupBox();
+            this.groupBoxDisplayOptions.Location = new System.Drawing.Point(14, 14);
+            this.groupBoxDisplayOptions.Name = "groupBoxDisplayOptions";
+            this.groupBoxDisplayOptions.Size = new System.Drawing.Size(330, 70);
+            this.groupBoxDisplayOptions.TabIndex = 0;
+            this.groupBoxDisplayOptions.Text = "Display Options";
+            
+            // radioButtonAsciiArt
+            this.radioButtonAsciiArt = new System.Windows.Forms.RadioButton();
+            this.radioButtonAsciiArt.AutoSize = true;
+            this.radioButtonAsciiArt.Checked = true;
+            this.radioButtonAsciiArt.Location = new System.Drawing.Point(15, 20);
+            this.radioButtonAsciiArt.Name = "radioButtonAsciiArt";
+            this.radioButtonAsciiArt.Size = new System.Drawing.Size(125, 17);
+            this.radioButtonAsciiArt.TabIndex = 0;
+            this.radioButtonAsciiArt.TabStop = true;
+            this.radioButtonAsciiArt.Text = "Swimming ASCII Art";
+            this.radioButtonAsciiArt.UseVisualStyleBackColor = true;
+            this.radioButtonAsciiArt.CheckedChanged += new System.EventHandler(this.radioButtonScreenSaverOption_CheckedChanged);
+            this.groupBoxDisplayOptions.Controls.Add(this.radioButtonAsciiArt);
+            
+            // radioButtonBlankScreen
+            this.radioButtonBlankScreen = new System.Windows.Forms.RadioButton();
+            this.radioButtonBlankScreen.AutoSize = true;
+            this.radioButtonBlankScreen.Location = new System.Drawing.Point(15, 43);
+            this.radioButtonBlankScreen.Name = "radioButtonBlankScreen";
+            this.radioButtonBlankScreen.Size = new System.Drawing.Size(91, 17);
+            this.radioButtonBlankScreen.TabIndex = 1;
+            this.radioButtonBlankScreen.Text = "Blank Screen";
+            this.radioButtonBlankScreen.UseVisualStyleBackColor = true;
+            this.radioButtonBlankScreen.CheckedChanged += new System.EventHandler(this.radioButtonScreenSaverOption_CheckedChanged);
+            this.groupBoxDisplayOptions.Controls.Add(this.radioButtonBlankScreen);
+            
+            // radioButtonLogo
+            this.radioButtonLogo = new System.Windows.Forms.RadioButton();
+            this.radioButtonLogo.AutoSize = true;
+            this.radioButtonLogo.Location = new System.Drawing.Point(146, 20);
+            this.radioButtonLogo.Name = "radioButtonLogo";
+            this.radioButtonLogo.Size = new System.Drawing.Size(85, 17);
+            this.radioButtonLogo.TabIndex = 2;
+            this.radioButtonLogo.Text = "Display Logo";
+            this.radioButtonLogo.UseVisualStyleBackColor = true;
+            this.radioButtonLogo.CheckedChanged += new System.EventHandler(this.radioButtonScreenSaverOption_CheckedChanged);
+            this.groupBoxDisplayOptions.Controls.Add(this.radioButtonLogo);
+            
+            // radioButtonScrollingMessage
+            this.radioButtonScrollingMessage = new System.Windows.Forms.RadioButton();
+            this.radioButtonScrollingMessage.AutoSize = true;
+            this.radioButtonScrollingMessage.Location = new System.Drawing.Point(146, 43);
+            this.radioButtonScrollingMessage.Name = "radioButtonScrollingMessage";
+            this.radioButtonScrollingMessage.Size = new System.Drawing.Size(115, 17);
+            this.radioButtonScrollingMessage.TabIndex = 3;
+            this.radioButtonScrollingMessage.Text = "Scrolling Message";
+            this.radioButtonScrollingMessage.UseVisualStyleBackColor = true;
+            this.radioButtonScrollingMessage.CheckedChanged += new System.EventHandler(this.radioButtonScreenSaverOption_CheckedChanged);
+            this.groupBoxDisplayOptions.Controls.Add(this.radioButtonScrollingMessage);
+            
+            // groupBoxActivation
+            this.groupBoxActivation = new System.Windows.Forms.GroupBox();
+            this.groupBoxActivation.Location = new System.Drawing.Point(14, 90);
+            this.groupBoxActivation.Name = "groupBoxActivation";
+            this.groupBoxActivation.Size = new System.Drawing.Size(330, 70);
+            this.groupBoxActivation.TabIndex = 1;
+            this.groupBoxActivation.Text = "Activation";
+            
+            // labelInactivityTimer
+            this.labelInactivityTimer = new System.Windows.Forms.Label();
+            this.labelInactivityTimer.AutoSize = true;
+            this.labelInactivityTimer.Location = new System.Drawing.Point(15, 22);
+            this.labelInactivityTimer.Name = "labelInactivityTimer";
+            this.labelInactivityTimer.Size = new System.Drawing.Size(82, 13);
+            this.labelInactivityTimer.TabIndex = 0;
+            this.labelInactivityTimer.Text = "Activate after:";
+            this.groupBoxActivation.Controls.Add(this.labelInactivityTimer);
+            
+            // numericUpDownInactivityMinutes
+            this.numericUpDownInactivityMinutes = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownInactivityMinutes.Location = new System.Drawing.Point(103, 20);
+            this.numericUpDownInactivityMinutes.Name = "numericUpDownInactivityMinutes";
+            this.numericUpDownInactivityMinutes.Size = new System.Drawing.Size(50, 20);
+            this.numericUpDownInactivityMinutes.TabIndex = 1;
+            this.numericUpDownInactivityMinutes.Value = new decimal(new int[] { 5, 0, 0, 0 });
+            this.numericUpDownInactivityMinutes.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            this.numericUpDownInactivityMinutes.Maximum = new decimal(new int[] { 60, 0, 0, 0 });
+            this.groupBoxActivation.Controls.Add(this.numericUpDownInactivityMinutes);
+            
+            // labelMinutes
+            this.labelMinutes = new System.Windows.Forms.Label();
+            this.labelMinutes.AutoSize = true;
+            this.labelMinutes.Location = new System.Drawing.Point(159, 22);
+            this.labelMinutes.Name = "labelMinutes";
+            this.labelMinutes.Size = new System.Drawing.Size(43, 13);
+            this.labelMinutes.TabIndex = 2;
+            this.labelMinutes.Text = "minutes";
+            this.groupBoxActivation.Controls.Add(this.labelMinutes);
+            
+            // checkBoxManualActivation
+            this.checkBoxManualActivation = new System.Windows.Forms.CheckBox();
+            this.checkBoxManualActivation.AutoSize = true;
+            this.checkBoxManualActivation.Checked = true;
+            this.checkBoxManualActivation.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxManualActivation.Location = new System.Drawing.Point(15, 45);
+            this.checkBoxManualActivation.Name = "checkBoxManualActivation";
+            this.checkBoxManualActivation.Size = new System.Drawing.Size(187, 17);
+            this.checkBoxManualActivation.TabIndex = 3;
+            this.checkBoxManualActivation.Text = "Allow manual activation with F3";
+            this.checkBoxManualActivation.UseVisualStyleBackColor = true;
+            this.groupBoxActivation.Controls.Add(this.checkBoxManualActivation);
+            
+            // groupBoxBehavior
+            this.groupBoxBehavior = new System.Windows.Forms.GroupBox();
+            this.groupBoxBehavior.Location = new System.Drawing.Point(14, 166);
+            this.groupBoxBehavior.Name = "groupBoxBehavior";
+            this.groupBoxBehavior.Size = new System.Drawing.Size(330, 70);
+            this.groupBoxBehavior.TabIndex = 2;
+            this.groupBoxBehavior.Text = "Behavior";
+            
+            // buttonScreenSaverBackgroundColor
+            this.buttonScreenSaverBackgroundColor = new System.Windows.Forms.Button();
+            this.buttonScreenSaverBackgroundColor.Location = new System.Drawing.Point(269, 14);
+            this.buttonScreenSaverBackgroundColor.Name = "buttonScreenSaverBackgroundColor";
+            this.buttonScreenSaverBackgroundColor.Size = new System.Drawing.Size(75, 23);
+            this.buttonScreenSaverBackgroundColor.TabIndex = 8;
+            this.buttonScreenSaverBackgroundColor.Text = "BG Color...";
+            this.buttonScreenSaverBackgroundColor.UseVisualStyleBackColor = true;
+            this.buttonScreenSaverBackgroundColor.Click += new System.EventHandler(this.buttonScreenSaverBackgroundColor_Click);
+            this.tabPageScreenSaver.Controls.Add(this.buttonScreenSaverBackgroundColor);
+            
+            // checkBoxExitOnData
+            this.checkBoxExitOnData = new System.Windows.Forms.CheckBox();
+            this.checkBoxExitOnData.AutoSize = true;
+            this.checkBoxExitOnData.Checked = true;
+            this.checkBoxExitOnData.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxExitOnData.Location = new System.Drawing.Point(15, 20);
+            this.checkBoxExitOnData.Name = "checkBoxExitOnData";
+            this.checkBoxExitOnData.Size = new System.Drawing.Size(223, 17);
+            this.checkBoxExitOnData.TabIndex = 0;
+            this.checkBoxExitOnData.Text = "Exit when data received from timing system";
+            this.checkBoxExitOnData.UseVisualStyleBackColor = true;
+            this.groupBoxBehavior.Controls.Add(this.checkBoxExitOnData);
+            
+            // checkBoxExitOnKeyPress
+            this.checkBoxExitOnKeyPress = new System.Windows.Forms.CheckBox();
+            this.checkBoxExitOnKeyPress.AutoSize = true;
+            this.checkBoxExitOnKeyPress.Checked = true;
+            this.checkBoxExitOnKeyPress.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxExitOnKeyPress.Location = new System.Drawing.Point(15, 43);
+            this.checkBoxExitOnKeyPress.Name = "checkBoxExitOnKeyPress";
+            this.checkBoxExitOnKeyPress.Size = new System.Drawing.Size(140, 17);
+            this.checkBoxExitOnKeyPress.TabIndex = 1;
+            this.checkBoxExitOnKeyPress.Text = "Exit on any key press";
+            this.checkBoxExitOnKeyPress.UseVisualStyleBackColor = true;
+            this.groupBoxBehavior.Controls.Add(this.checkBoxExitOnKeyPress);
+            
+            // Logo path controls
+            this.labelLogoPath = new System.Windows.Forms.Label();
+            this.labelLogoPath.AutoSize = true;
+            this.labelLogoPath.Location = new System.Drawing.Point(14, 90);
+            this.labelLogoPath.Name = "labelLogoPath";
+            this.labelLogoPath.Size = new System.Drawing.Size(61, 13);
+            this.labelLogoPath.TabIndex = 3;
+            this.labelLogoPath.Text = "Logo Path:";
+            this.labelLogoPath.Visible = false;
+            
+            this.textBoxLogoPath = new System.Windows.Forms.TextBox();
+            this.textBoxLogoPath.Location = new System.Drawing.Point(81, 87);
+            this.textBoxLogoPath.Name = "textBoxLogoPath";
+            this.textBoxLogoPath.Size = new System.Drawing.Size(182, 20);
+            this.textBoxLogoPath.TabIndex = 4;
+            this.textBoxLogoPath.Visible = false;
+            
+            this.buttonSelectLogo = new System.Windows.Forms.Button();
+            this.buttonSelectLogo.Location = new System.Drawing.Point(269, 85);
+            this.buttonSelectLogo.Name = "buttonSelectLogo";
+            this.buttonSelectLogo.Size = new System.Drawing.Size(75, 23);
+            this.buttonSelectLogo.TabIndex = 5;
+            this.buttonSelectLogo.Text = "Browse...";
+            this.buttonSelectLogo.UseVisualStyleBackColor = true;
+            this.buttonSelectLogo.Visible = false;
+            this.buttonSelectLogo.Click += new System.EventHandler(this.buttonSelectLogo_Click);
+            
+            // Scrolling message controls
+            this.labelScrollingMessage = new System.Windows.Forms.Label();
+            this.labelScrollingMessage.AutoSize = true;
+            this.labelScrollingMessage.Location = new System.Drawing.Point(14, 116);
+            this.labelScrollingMessage.Name = "labelScrollingMessage";
+            this.labelScrollingMessage.Size = new System.Drawing.Size(53, 13);
+            this.labelScrollingMessage.TabIndex = 6;
+            this.labelScrollingMessage.Text = "Message:";
+            this.labelScrollingMessage.Visible = false;
+            
+            this.textBoxScrollingMessage = new System.Windows.Forms.TextBox();
+            this.textBoxScrollingMessage.Location = new System.Drawing.Point(81, 113);
+            this.textBoxScrollingMessage.Name = "textBoxScrollingMessage";
+            this.textBoxScrollingMessage.Size = new System.Drawing.Size(263, 20);
+            this.textBoxScrollingMessage.TabIndex = 7;
+            this.textBoxScrollingMessage.Text = "Welcome to Silver Rays Swim Club";
+            this.textBoxScrollingMessage.Visible = false;
+
             this.tabControl.ResumeLayout(false);
             this.tabPageConnection.ResumeLayout(false);
             this.tabPageConnection.PerformLayout();
@@ -401,6 +620,9 @@ namespace SRAYSScoreboard
             this.tabPageColors.PerformLayout();
             this.tabPagePoolConfig.ResumeLayout(false);
             this.tabPagePoolConfig.PerformLayout();
+            this.tabPageScreenSaver.ResumeLayout(false);
+            this.tabPageScreenSaver.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInactivityMinutes)).BeginInit();
             this.ResumeLayout(false);
         }
 
@@ -438,5 +660,24 @@ namespace SRAYSScoreboard
         private System.Windows.Forms.ColorDialog colorDialog;
         private System.Windows.Forms.CheckBox checkBoxZeroToNine;
         private System.Windows.Forms.Label labelLaneNumbering;
+        private System.Windows.Forms.TabPage tabPageScreenSaver;
+        private System.Windows.Forms.GroupBox groupBoxDisplayOptions;
+        private System.Windows.Forms.RadioButton radioButtonAsciiArt;
+        private System.Windows.Forms.RadioButton radioButtonBlankScreen;
+        private System.Windows.Forms.RadioButton radioButtonLogo;
+        private System.Windows.Forms.RadioButton radioButtonScrollingMessage;
+        private System.Windows.Forms.GroupBox groupBoxActivation;
+        private System.Windows.Forms.Label labelInactivityTimer;
+        private System.Windows.Forms.NumericUpDown numericUpDownInactivityMinutes;
+        private System.Windows.Forms.Label labelMinutes;
+        private System.Windows.Forms.CheckBox checkBoxManualActivation;
+        private System.Windows.Forms.GroupBox groupBoxBehavior;
+        private System.Windows.Forms.CheckBox checkBoxExitOnData;
+        private System.Windows.Forms.CheckBox checkBoxExitOnKeyPress;
+        private System.Windows.Forms.TextBox textBoxScrollingMessage;
+        private System.Windows.Forms.Label labelScrollingMessage;
+        private System.Windows.Forms.Button buttonSelectLogo;
+        private System.Windows.Forms.Label labelLogoPath;
+        private System.Windows.Forms.TextBox textBoxLogoPath;
     }
 }

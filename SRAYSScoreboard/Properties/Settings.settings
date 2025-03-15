@@ -37,5 +37,29 @@
     <Setting Name="UseLaneNumberingZeroToNine" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="ScreenSaverDisplayOption" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AsciiArt</Value>
+    </Setting>
+    <Setting Name="ScreenSaverInactivityMinutes" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="ScreenSaverManualActivation" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ScreenSaverExitOnData" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ScreenSaverExitOnKeyPress" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ScreenSaverLogoPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ScreenSaverScrollingMessage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Welcome to Silver Rays Swim Club</Value>
+    </Setting>
+    <Setting Name="ScreenSaverBackgroundColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Black</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

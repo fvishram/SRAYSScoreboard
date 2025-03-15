@@ -1,4 +1,4 @@
-﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
+﻿﻿﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -87,6 +87,183 @@ namespace SRAYSScoreboard
         
         /// <summary>Flag indicating whether to use lane numbering 0-9 instead of 1-10</summary>
         private bool useLaneNumberingZeroToNine = false;
+        
+        /// <summary>Timer for tracking inactivity for screen saver activation</summary>
+        private Timer inactivityTimer;
+        
+        /// <summary>Reference to the screen saver form</summary>
+        private ScreenSaver screenSaverForm;
+        
+        /// <summary>Flag indicating whether the screen saver is currently active</summary>
+        private bool screenSaverActive = false;
+        
+        /// <summary>
+        /// Updates the screen saver settings based on the application settings.
+        /// </summary>
+        private void UpdateScreenSaverSettings()
+        {
+            try
+            {
+                // Stop the timer if it's running
+                if (inactivityTimer.Enabled)
+                {
+                    inactivityTimer.Stop();
+                }
+                
+                // Get the inactivity timeout from settings
+                int inactivityMinutes = Properties.Settings.Default.ScreenSaverInactivityMinutes;
+                
+                // Set the timer interval (convert minutes to milliseconds)
+                inactivityTimer.Interval = inactivityMinutes * 60 * 1000;
+                
+                // Start the timer if the inactivity timeout is greater than 0
+                if (inactivityMinutes > 0)
+                {
+                    inactivityTimer.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating screen saver settings: {ex.Message}");
+            }
+        }
+        
+        /// <summary>
+        /// Resets the inactivity timer.
+        /// </summary>
+        private void ResetInactivityTimer()
+        {
+            try
+            {
+                // Only reset if the timer is enabled
+                if (inactivityTimer.Enabled)
+                {
+                    inactivityTimer.Stop();
+                    inactivityTimer.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error resetting inactivity timer: {ex.Message}");
+            }
+        }
+        
+        /// <summary>
+        /// Handles the inactivity timer tick event.
+        /// </summary>
+        private void InactivityTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                // Stop the timer
+                inactivityTimer.Stop();
+                
+                // Activate the screen saver
+                ActivateScreenSaver();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in inactivity timer tick: {ex.Message}");
+            }
+        }
+        
+        /// <summary>
+        /// Handles the mouse move event.
+        /// </summary>
+        private void Scoreboard_MouseMove(object sender, MouseEventArgs e)
+        {
+            // Reset the inactivity timer
+            ResetInactivityTimer();
+        }
+        
+        /// <summary>
+        /// Handles the mouse click event.
+        /// </summary>
+        private void Scoreboard_MouseClick(object sender, MouseEventArgs e)
+        {
+            // Reset the inactivity timer
+            ResetInactivityTimer();
+        }
+        
+        /// <summary>
+        /// Activates the screen saver.
+        /// </summary>
+        private void ActivateScreenSaver()
+        {
+            try
+            {
+                // Only activate if not already active
+                if (!screenSaverActive)
+                {
+                    // Create a new screen saver form if it doesn't exist
+                    if (screenSaverForm == null || screenSaverForm.IsDisposed)
+                    {
+                        screenSaverForm = new ScreenSaver();
+                        
+                        // Handle the form closed event
+                        screenSaverForm.FormClosed += (s, args) => 
+                        {
+                            // Reset the screen saver active flag
+                            screenSaverActive = false;
+                            
+                            // Restart the inactivity timer
+                            ResetInactivityTimer();
+                        };
+                    }
+                    
+                    // Load the screen saver settings
+                    screenSaverForm.LoadSettings();
+                    
+                    // Set the screen saver active flag
+                    screenSaverActive = true;
+                    
+                    // Show the screen saver
+                    screenSaverForm.Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error activating screen saver: {ex.Message}");
+                
+                // Reset the screen saver active flag
+                screenSaverActive = false;
+                
+                // Restart the inactivity timer
+                ResetInactivityTimer();
+            }
+        }
+        
+        /// <summary>
+        /// Deactivates the screen saver.
+        /// </summary>
+        private void DeactivateScreenSaver()
+        {
+            try
+            {
+                // Only deactivate if active
+                if (screenSaverActive && screenSaverForm != null && !screenSaverForm.IsDisposed)
+                {
+                    // Close the screen saver form
+                    screenSaverForm.Close();
+                    
+                    // Reset the screen saver active flag
+                    screenSaverActive = false;
+                    
+                    // Restart the inactivity timer
+                    ResetInactivityTimer();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deactivating screen saver: {ex.Message}");
+                
+                // Reset the screen saver active flag
+                screenSaverActive = false;
+                
+                // Restart the inactivity timer
+                ResetInactivityTimer();
+            }
+        }
         /// <summary>
         /// Initializes a new instance of the Scoreboard form.
         /// </summary>
@@ -105,6 +282,17 @@ namespace SRAYSScoreboard
             // Set up keyboard handling for the form
             this.KeyPreview = true;
             this.KeyDown += Scoreboard_KeyDown;
+            
+            // Set up mouse handling for inactivity tracking
+            this.MouseMove += Scoreboard_MouseMove;
+            this.MouseClick += Scoreboard_MouseClick;
+            
+            // Initialize the inactivity timer
+            inactivityTimer = new Timer();
+            inactivityTimer.Tick += InactivityTimer_Tick;
+            
+            // Load screen saver settings and start the timer if enabled
+            UpdateScreenSaverSettings();
         }
         
         /// <summary>
@@ -146,11 +334,23 @@ namespace SRAYSScoreboard
         {
             try
             {
+                // Reset inactivity timer on any key press
+                ResetInactivityTimer();
+                
                 // Show settings form when F2 is pressed
                 if (e.KeyCode == Keys.F2)
                 {
                     ShowSettingsForm();
                     e.Handled = true;
+                }
+                // Manually activate screen saver when F3 is pressed
+                else if (e.KeyCode == Keys.F3)
+                {
+                    if (Properties.Settings.Default.ScreenSaverManualActivation)
+                    {
+                        ActivateScreenSaver();
+                        e.Handled = true;
+                    }
                 }
                 // Close application when Escape is pressed
                 else if (e.KeyCode == Keys.Escape)
@@ -224,6 +424,9 @@ namespace SRAYSScoreboard
                 // Apply lane numbering setting
                 useLaneNumberingZeroToNine = formSettings.UseLaneNumberingZeroToNine;
                 UpdateLaneNumbering();
+                
+                // Update screen saver settings
+                UpdateScreenSaverSettings();
                 
                 // Update the OBS scoreboard if it exists
                 if (obsScoreboard != null)
@@ -353,336 +556,4 @@ namespace SRAYSScoreboard
                         ApplyNameLabelsColor(Properties.Settings.Default.NameLabelsColor);
                     }
                     
-                    if (Properties.Settings.Default.TimeLabelsColor != Color.Empty)
-                    {
-                        ApplyTimeLabelsColor(Properties.Settings.Default.TimeLabelsColor);
-                    }
-                    
-                    if (Properties.Settings.Default.PlaceLabelsColor != Color.Empty)
-                    {
-                        ApplyPlaceLabelsColor(Properties.Settings.Default.PlaceLabelsColor);
-                    }
-                    
-                    if (Properties.Settings.Default.LaneLabelsColor != Color.Empty)
-                    {
-                        ApplyLaneLabelsColor(Properties.Settings.Default.LaneLabelsColor);
-                    }
-                }
-                else if (Properties.Settings.Default.TextColor != Color.Empty)
-                {
-                    // Fall back to the legacy text color setting if no individual colors are set
-                    Color textColor = Properties.Settings.Default.TextColor;
-                    ApplyHeaderLabelsColor(textColor);
-                    ApplyColumnHeadersColor(textColor);
-                    ApplyNameLabelsColor(textColor);
-                    ApplyTimeLabelsColor(textColor);
-                    ApplyPlaceLabelsColor(textColor);
-                    ApplyLaneLabelsColor(textColor);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Just log the error and continue with default colors
-                Console.WriteLine($"Error loading color settings: {ex.Message}");
-            }
-        }
-        
-        /// <summary>
-        /// Applies the specified color to header labels (labelTime, labelEvent).
-        /// </summary>
-        /// <param name="color">The color to apply</param>
-        private void ApplyHeaderLabelsColor(Color color)
-        {
-            labelTime.ForeColor = color;
-            labelEvent.ForeColor = color;
-        }
-        
-        /// <summary>
-        /// Applies the specified color to column headers (label1, label2, label3, label4).
-        /// </summary>
-        /// <param name="color">The color to apply</param>
-        private void ApplyColumnHeadersColor(Color color)
-        {
-            label1.ForeColor = color;
-            label2.ForeColor = color;
-            label3.ForeColor = color;
-            label4.ForeColor = color;
-        }
-        
-        /// <summary>
-        /// Applies the specified color to name labels.
-        /// </summary>
-        /// <param name="color">The color to apply</param>
-        private void ApplyNameLabelsColor(Color color)
-        {
-            foreach (Label label in nameLabels)
-            {
-                label.ForeColor = color;
-            }
-        }
-        
-        /// <summary>
-        /// Applies the specified color to time labels.
-        /// </summary>
-        /// <param name="color">The color to apply</param>
-        private void ApplyTimeLabelsColor(Color color)
-        {
-            foreach (Label label in timeLabels)
-            {
-                label.ForeColor = color;
-            }
-        }
-        
-        /// <summary>
-        /// Applies the specified color to place labels.
-        /// </summary>
-        /// <param name="color">The color to apply</param>
-        private void ApplyPlaceLabelsColor(Color color)
-        {
-            foreach (Label label in placeLabels)
-            {
-                label.ForeColor = color;
-            }
-        }
-        
-        /// <summary>
-        /// Applies the specified color to lane number labels.
-        /// </summary>
-        /// <param name="color">The color to apply</param>
-        private void ApplyLaneLabelsColor(Color color)
-        {
-            for (int i = 5; i <= 14; i++)
-            {
-                Control[] controls = this.tableLayoutPanel1.Controls.Find("label" + i, true);
-                if (controls.Length > 0 && controls[0] is Label)
-                {
-                    ((Label)controls[0]).ForeColor = color;
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Handles data received from the serial port. This event is triggered when
-        /// the timing system sends data to the application.
-        /// </summary>
-        /// <param name="sender">The source of the event (SerialPort)</param>
-        /// <param name="e">Event data</param>
-        private void serialPort_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
-        {
-            SerialPort sp = (SerialPort)sender;
-            char[] readData = sp.ReadExisting().ToCharArray();
-            scoreboardData.processInput(readData);
-            SafeUpdateScoreboard();
-        }
-
-        /// <summary>
-        /// Updates the scoreboard UI with the latest data from the timing system.
-        /// This method ensures that UI updates are performed on the UI thread using Invoke when necessary.
-        /// </summary>
-        private void SafeUpdateScoreboard()
-        {
-            if (labelTime.InvokeRequired)
-            {
-                labelTime.Invoke(new Action(() => { SafeUpdateScoreboard(); }));
-            }
-            else
-                labelTime.Text = scoreboardData.RunningTime;
-
-            if(labelEvent.InvokeRequired)
-            {
-                labelEvent.Invoke(new Action(() => { SafeUpdateScoreboard();}));        
-            }
-            else
-                labelEvent.Text = scoreboardData.EventName;
-
-            // Update swimmer data with proper lane mapping based on numbering setting
-            for(int i = 0; i < nameLabels.Count; i++) 
-            {
-                if (nameLabels[i].InvokeRequired)
-                {
-                    nameLabels[i].Invoke(new Action(() => { SafeUpdateScoreboard(); }));
-                }
-                else
-                {
-                    // Get the correct data index based on lane numbering setting
-                    int dataIndex = GetDataIndexForDisplayIndex(i);
-                    nameLabels[i].Text = scoreboardData.SwimmerNames[dataIndex];
-                }
-            }
-
-            for (int i = 0; i < placeLabels.Count; i++)
-            {
-                if (placeLabels[i].InvokeRequired)
-                {
-                    placeLabels[i].Invoke(new Action(() => { SafeUpdateScoreboard(); }));
-                }
-                else
-                {
-                    // Get the correct data index based on lane numbering setting
-                    int dataIndex = GetDataIndexForDisplayIndex(i);
-                    placeLabels[i].Text = scoreboardData.SwimmerPlaces[dataIndex];
-                }
-            }
-
-            for (int i = 0; i < timeLabels.Count; i++)
-            {
-                if (timeLabels[i].InvokeRequired)
-                {
-                    timeLabels[i].Invoke(new Action(() => { SafeUpdateScoreboard(); }));
-                }
-                else
-                {
-                    // Get the correct data index based on lane numbering setting
-                    int dataIndex = GetDataIndexForDisplayIndex(i);
-                    timeLabels[i].Text = scoreboardData.SwimmerTimes[dataIndex];
-                }
-            }
-        }
-
-        /// <summary>
-        /// Maps a display index (position in the UI) to the correct data index based on lane numbering setting.
-        /// </summary>
-        /// <param name="displayIndex">The index of the label in the UI (0-9)</param>
-        /// <returns>The index to use for accessing data from the arrays (0-9)</returns>
-        private int GetDataIndexForDisplayIndex(int displayIndex)
-        {
-            if (!useLaneNumberingZeroToNine)
-            {
-                // Standard 1-10 numbering: display index matches data index
-                return displayIndex;
-            }
-            else
-            {
-                // 0-9 numbering: need to remap
-                if (displayIndex == 0)
-                {
-                    // Lane 0 should show lane 10 data (index 9)
-                    return 9;
-                }
-                else
-                {
-                    // Lanes 1-9 should show lanes 1-9 data (indices 0-8)
-                    return displayIndex - 1;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Handles the form closed event. Safely closes the serial port connection to the timing system.
-        /// </summary>
-        /// <param name="sender">The source of the event</param>
-        /// <param name="e">Event data</param>
-        private void Scoreboard_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            try
-            {
-                // Only close the port if it's open
-                if (serialPort.IsOpen)
-                {
-                    serialPort.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                // Just log the error since we're closing anyway
-                Console.WriteLine($"Error closing serial port: {ex.Message}");
-            }
-        }
-
-        
-        /// <summary>
-        /// Updates the lane number labels based on the lane numbering setting.
-        /// </summary>
-        private void UpdateLaneNumbering()
-        {
-            try
-            {
-                // Update lane number labels based on the setting
-                for (int i = 5; i <= 14; i++)
-                {
-                    Control[] controls = this.tableLayoutPanel1.Controls.Find("label" + i, true);
-                    if (controls.Length > 0 && controls[0] is Label)
-                    {
-                        Label laneLabel = (Label)controls[0];
-                        int laneNumber = i - 4; // Convert from label index to lane number
-                        
-                        if (useLaneNumberingZeroToNine)
-                        {
-                            // Use 0-9 numbering
-                            laneLabel.Text = (laneNumber - 1).ToString();
-                        }
-                        else
-                        {
-                            // Use 1-10 numbering
-                            laneLabel.Text = laneNumber.ToString();
-                        }
-                    }
-                }
-                
-                // Update the OBS scoreboard if it exists
-                if (obsScoreboard != null)
-                {
-                    obsScoreboard.UpdateLaneNumbering(useLaneNumberingZeroToNine);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the error but continue
-                Console.WriteLine($"Error updating lane numbering: {ex.Message}");
-            }
-        }
-        
-        /// <summary>
-        /// Updates the visibility of lanes based on the selected pool configuration.
-        /// </summary>
-        /// <param name="laneCount">The number of lanes to display (8 or 10)</param>
-        private void UpdatePoolLaneVisibility(int laneCount)
-        {
-            // Ensure lane count is valid
-            if (laneCount != 8 && laneCount != 10)
-            {
-                laneCount = 10; // Default to 10 lanes
-            }
-            
-            // Update visibility of lanes 9 and 10
-            bool showLanes9And10 = (laneCount == 10);
-            
-            // Lane 9 controls
-            Control[] lane9Controls = new Control[] {
-                nameLabels[8], timeLabels[8], placeLabels[8]
-            };
-            
-            // Lane 10 controls
-            Control[] lane10Controls = new Control[] {
-                nameLabels[9], timeLabels[9], placeLabels[9]
-            };
-            
-            // Lane number labels
-            Control[] lane9LabelControls = this.tableLayoutPanel1.Controls.Find("label13", true);
-            Control[] lane10LabelControls = this.tableLayoutPanel1.Controls.Find("label14", true);
-            
-            // Update visibility
-            foreach (Control control in lane9Controls)
-            {
-                control.Visible = showLanes9And10;
-            }
-            
-            foreach (Control control in lane10Controls)
-            {
-                control.Visible = showLanes9And10;
-            }
-            
-            // Update lane number label visibility
-            if (lane9LabelControls.Length > 0)
-            {
-                lane9LabelControls[0].Visible = showLanes9And10;
-            }
-            
-            if (lane10LabelControls.Length > 0)
-            {
-                lane10LabelControls[0].Visible = showLanes9And10;
-            }
-        }
-    }
-}
+                    if (

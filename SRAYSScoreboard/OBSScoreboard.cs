@@ -50,6 +50,12 @@ namespace SRAYSScoreboard
         
         /// <summary>Flag indicating whether to use lane numbering 0-9 instead of 1-10</summary>
         private bool useLaneNumberingZeroToNine = false;
+        
+        /// <summary>Reference to the screen saver form</summary>
+        private ScreenSaver screenSaverForm;
+        
+        /// <summary>Flag indicating whether the screen saver is currently active</summary>
+        private bool screenSaverActive = false;
 
         /// <summary>
         /// Initializes a new instance of the OBSScoreboard form.
@@ -72,6 +78,80 @@ namespace SRAYSScoreboard
             updateTimer.Interval = 100; // Update 10 times per second
             updateTimer.Tick += UpdateTimer_Tick;
             updateTimer.Start();
+        }
+        
+        /// <summary>
+        /// Activates the screen saver for the OBS scoreboard.
+        /// </summary>
+        public void ActivateScreenSaver()
+        {
+            // Only activate if not already active
+            if (!screenSaverActive)
+            {
+                try
+                {
+                    // Create a new screen saver form if needed
+                    if (screenSaverForm == null || screenSaverForm.IsDisposed)
+                    {
+                        screenSaverForm = new ScreenSaver();
+                    }
+                    
+                    // Load the screen saver settings
+                    screenSaverForm.LoadSettings();
+                    
+                    // Show the screen saver
+                    screenSaverForm.Show();
+                    
+                    // Set the active flag
+                    screenSaverActive = true;
+                    
+                    // Handle the form closed event
+                    screenSaverForm.FormClosed += (s, e) => {
+                        screenSaverActive = false;
+                    };
+                }
+                catch (Exception ex)
+                {
+                    // Log the error but continue
+                    Console.WriteLine($"Error activating OBS screen saver: {ex.Message}");
+                    screenSaverActive = false;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Deactivates the screen saver for the OBS scoreboard.
+        /// </summary>
+        public void DeactivateScreenSaver()
+        {
+            if (screenSaverActive && screenSaverForm != null && !screenSaverForm.IsDisposed)
+            {
+                try
+                {
+                    // Close the screen saver form
+                    screenSaverForm.Close();
+                    
+                    // Set the active flag
+                    screenSaverActive = false;
+                }
+                catch (Exception ex)
+                {
+                    // Log the error but continue
+                    Console.WriteLine($"Error deactivating OBS screen saver: {ex.Message}");
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Notifies the screen saver that data has been received from the timing system.
+        /// </summary>
+        public void OnDataReceived()
+        {
+            // Check if the screen saver should exit when data is received
+            if (screenSaverActive && screenSaverForm != null && Properties.Settings.Default.ScreenSaverExitOnData)
+            {
+                screenSaverForm.OnDataReceived();
+            }
         }
 
         /// <summary>

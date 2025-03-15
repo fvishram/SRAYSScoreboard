@@ -26,6 +26,19 @@ mindmap
         Lane Numbering
           1-10 (Standard)
           0-9 (Alternative)
+      Screen Saver
+        Display Options
+          Swimming ASCII Art
+          Blank Screen
+          Display Logo
+          Scrolling Message
+        Activation
+          Inactivity Timer
+          Manual Activation (F3)
+        Behavior
+          Exit on Data Received
+          Exit on Key Press
+        Background Color
     OBS Integration
       Window Capture
       Color Keying
@@ -68,6 +81,33 @@ Configure the number of lanes displayed on the scoreboard and lane numbering:
 - Lane Numbering - Choose between standard (1-10) or alternative (0-9) lane numbering:
   - Standard (1-10) - Traditional lane numbering from 1 to 10
   - Alternative (0-9) - Zero-based lane numbering from 0 to 9, which may be required for certain competitions or timing systems
+
+### Screen Saver Tab
+Configure the screen saver that activates after a period of inactivity:
+
+#### Display Options
+Choose how the screen saver appears:
+- Swimming ASCII Art - Displays animated swimming-related ASCII art (default)
+- Blank Screen - Shows a simple blank screen
+- Display Logo - Shows a custom logo image
+- Scrolling Message - Displays a scrolling text message
+
+#### Activation
+Configure when the screen saver activates:
+- Inactivity Timer - Set the number of minutes of inactivity before the screen saver activates (default: 5 minutes)
+- Manual Activation - Enable or disable manual activation using the F3 key
+
+#### Behavior
+Configure how the screen saver behaves:
+- Exit on Data Received - Automatically exit the screen saver when data is received from the timing system
+- Exit on Key Press - Exit the screen saver when any key is pressed
+
+#### Appearance
+- Background Color - Change the background color of the screen saver
+- Logo Path - Select a custom logo image file (only visible when "Display Logo" is selected)
+- Scrolling Message - Enter a custom message to display (only visible when "Scrolling Message" is selected)
+
+The screen saver helps prevent screen burn-in during periods of inactivity and provides a professional appearance when the scoreboard is not in active use.
 
 #### Lane Numbering Details
 

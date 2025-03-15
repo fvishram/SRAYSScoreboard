@@ -18,12 +18,15 @@ flowchart LR
     C --> E["Settings
     Configuration UI"]
     E --> C
+    C --> F["ScreenSaver
+    Inactive Display"]
     
     style A fill:#f9f,stroke:#333,stroke-width:2px
     style B fill:#bbf,stroke:#33f,stroke-width:2px
     style C fill:#bfb,stroke:#3a3,stroke-width:2px
     style D fill:#fbb,stroke:#a33,stroke-width:2px
     style E fill:#fdb,stroke:#a63,stroke-width:2px
+    style F fill:#ddf,stroke:#55d,stroke-width:2px
 ```
 
 The diagram above shows the data flow between the main components of the application.
@@ -34,7 +37,8 @@ The diagram above shows the data flow between the main components of the applica
 2. **AresDataHandler**: Processes and parses the data received from the timing system
 3. **Scoreboard Form**: The main user interface that displays the scoreboard data
 4. **OBSScoreboard Form**: A secondary interface optimized for streaming with OBS
-5. **Settings Form**: A tabbed dialog for configuring the application, including COM port selection, color customization, and pool lane configuration
+5. **Settings Form**: A tabbed dialog for configuring the application, including COM port selection, color customization, pool lane configuration, and screen saver settings
+6. **ScreenSaver Form**: A form that displays animated content when the scoreboard is inactive
 
 ## Data Flow
 
@@ -105,6 +109,21 @@ Key methods:
 - `LoadSettings()`: Loads saved settings from application properties
 - `PopulateComPorts()`: Populates the COM port dropdown with available ports
 - Various color customization methods
+
+### ScreenSaver
+
+A form that displays animated content when the scoreboard is inactive:
+- Provides visual entertainment and prevents screen burn-in during periods of inactivity
+- Supports multiple display options (ASCII art, blank screen, logo, scrolling message)
+- Activates automatically after a configurable period of inactivity
+- Can be manually activated using the F3 key
+- Exits automatically when data is received from the timing system or when any key is pressed
+
+Key methods:
+- `LoadSettings()`: Loads screen saver settings from application properties
+- `AnimationTimer_Tick()`: Updates the animation on each timer tick
+- `OnDataReceived()`: Handles data received from the timing system
+- Event handlers for keyboard and mouse input to exit the screen saver
 
 ## Threading Model
 
