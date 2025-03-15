@@ -96,7 +96,7 @@ The diagram above shows the data flow from the timing system to the application 
    - Check for any damaged pins in the DB9 connectors on both ends
 
 2. **Verify COM Port Settings**
-   - Open the Settings dialog by pressing F2 or right-clicking and selecting "Settings"
+   - Open the Settings dialog by pressing F2
    - In the Connection tab, select the correct COM port from the dropdown list
    - Note that COM5 is automatically recommended as the default timing system port
    - Click "Refresh" to update the list of available ports
@@ -172,7 +172,7 @@ The diagram above shows the data flow from the timing system to the application 
    - Open the Settings dialog by pressing F2
    - Go to the Colors tab
    - Click "Reset Colors" to restore default colors
-   - Alternatively, right-click on the scoreboard and select "Colors" > "Reset to Default Colors"
+   - This will restore all colors to their default values
 
 2. **Check Display Resolution**
    - Ensure your display resolution is at least 1024x768

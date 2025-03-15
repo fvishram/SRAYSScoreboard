@@ -26,10 +26,6 @@ mindmap
         Lane Numbering
           1-10 (Standard)
           0-9 (Alternative)
-    Context Menu
-      COM Port Selection
-      Colors
-      Pool Configuration
     OBS Integration
       Window Capture
       Color Keying
@@ -42,10 +38,7 @@ The diagram above shows the various customization options available in SRAYSScor
 
 ## Settings Dialog
 
-SRAYSScoreboard features a comprehensive settings dialog that provides a centralized interface for all customization options. You can access this dialog in two ways:
-
-1. Press the F2 key while the scoreboard is active
-2. Right-click on the scoreboard and select "Settings" from the context menu
+SRAYSScoreboard features a comprehensive settings dialog that provides a centralized interface for all customization options. You can access this dialog by pressing the F2 key while the scoreboard is active.
 
 The settings dialog is organized into three tabs:
 
@@ -110,50 +103,14 @@ graph LR
 
 **Important Note**: Changing the lane numbering setting only affects how the lanes are labeled and how the data is displayed in the UI. It does not change how the data is received or processed from the timing system. The timing system always sends data using lanes 1-10, and the application maps this data to the appropriate display positions based on your selected numbering scheme.
 
-## Context Menu Customization
-
-SRAYSScoreboard also offers customization options through its context menu. Right-click anywhere on the scoreboard to access these options.
-
-### Color Customization
-
-You can change the colors of various scoreboard elements through the context menu:
-
-1. Right-click on the scoreboard
-2. Select "Colors" and then choose one of the following options:
-   - "Background Color" - Changes the background color of the entire scoreboard
-   - "Text Color (All)" - Changes all text elements to the same color
-   - "Header Labels Color" - Changes the color of the event name and running time
-   - "Column Headers Color" - Changes the color of the column titles (Lane, Name, Place, Time)
-   - "Name Labels Color" - Changes the color of all swimmer names
-   - "Time Labels Color" - Changes the color of all swimmer times
-   - "Place Labels Color" - Changes the color of all place indicators
-   - "Lane Labels Color" - Changes the color of the lane numbers
-   - "Reset to Default Colors" - Resets all colors to their default values
-3. Choose your desired color from the color picker (if applicable)
-4. Click "OK" to apply the change
+## Default Color Scheme
 
 The default color scheme uses:
 - Black background
 - Blue header labels and column headers
 - Light steel blue for all data (names, times, places, lane numbers)
 
-### COM Port Configuration
-
-You can change the COM port used to connect to the timing system through the context menu:
-
-1. Right-click on the scoreboard
-2. Select "COM Port"
-3. Choose the desired COM port from the list
-4. If your COM port isn't listed, select "Refresh List" to update the available ports
-
-### Pool Configuration
-
-You can change the number of lanes displayed on the scoreboard and lane numbering through the context menu:
-
-1. Right-click on the scoreboard
-2. Select "Pool Configuration"
-3. Choose either "8 Lanes" or "10 Lanes" to set the number of visible lanes
-4. Select "Lane Numbering" and choose either "Standard (1-10)" or "Alternative (0-9)" to set the lane numbering style
+All color customization is done through the Settings dialog (press F2).
 
 ## OBS Integration
 
