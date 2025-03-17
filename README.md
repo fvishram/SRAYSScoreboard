@@ -120,10 +120,14 @@ Before using SRAYSScoreboard, you must configure your Omega ARES 21 timing syste
 ### Application Setup
 
 1. Launch SRAYSScoreboard
-2. Access the settings dialog by pressing F2 on your keyboard
-3. In the Connection tab, select your COM port from the dropdown list
-4. Optionally, configure colors and pool lane count in the other tabs
-5. Click "OK" to save the settings
+2. A COM port selection dialog will appear automatically
+   - Select the appropriate COM port for your timing system from the dropdown list
+   - Click "Refresh" if you don't see your port (e.g., if you just connected the timing system)
+   - Click "OK" to proceed or "Skip" if you want to configure the port later
+3. After selecting a COM port, the main application will start
+4. Access the full settings dialog anytime by pressing F2 on your keyboard
+5. Optionally, configure colors and pool lane count in the other tabs
+6. Click "OK" to save the settings
 
 ## Usage
 
@@ -147,8 +151,8 @@ Before using SRAYSScoreboard, you must configure your Omega ARES 21 timing syste
   - Lane labels color
 - Pool configuration options (8 or 10 lanes)
 - Lane numbering options (1-10 or 0-9)
+- Initial COM port selection dialog on startup for easy configuration
 - Easy COM port selection with dropdown list and refresh option
-- COM5 automatically recommended as the default timing system port
 - Dedicated OBS interface for live streaming with automatic updates
 - Automatic saving and loading of user preferences
 - Comprehensive error handling and connection management

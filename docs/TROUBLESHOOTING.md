@@ -96,11 +96,15 @@ The diagram above shows the data flow from the timing system to the application 
    - Check for any damaged pins in the DB9 connectors on both ends
 
 2. **Verify COM Port Settings**
-   - Open the Settings dialog by pressing F2
-   - In the Connection tab, select the correct COM port from the dropdown list
-   - Note that COM5 is automatically recommended as the default timing system port
-   - Click "Refresh" to update the list of available ports
+   - When the application starts, a COM port selection dialog appears automatically
+   - Select the correct COM port from the dropdown list
+   - If you don't see your port, click "Refresh" to update the list
+   - If you skipped the initial dialog, you can access the settings anytime:
+     - Open the Settings dialog by pressing F2
+     - In the Connection tab, select the correct COM port from the dropdown list
+     - Click "Refresh" to update the list of available ports
    - Check Windows Device Manager to confirm the COM port is properly installed
+   - Note that COM port numbers may change when you restart your computer or reconnect devices
 
 3. **Check Timing System Configuration**
    - Verify the ARES system is set to output in Venus ERTD scoreboard format
@@ -136,6 +140,33 @@ The diagram above shows the data flow from the timing system to the application 
      - Uncheck "Allow the computer to turn off this device to save power"
 
 ## Display Issues
+
+### Data Processing Issues
+
+**Symptoms:**
+- No data appears despite confirmed connection to timing system
+- Garbled or incomplete data appears on the scoreboard
+- Control characters (SOH, STX, EOT) not being recognized properly
+- Timing system appears to be sending data but scoreboard doesn't update
+
+**Solutions:**
+1. **Verify Correct Data Processing Implementation**
+   - The application MUST use char arrays to process data from the serial port
+   - The Venus ERTD protocol requires character-by-character processing
+   - If you've modified the code, ensure the SerialPort_DataReceived method uses:
+     ```csharp
+     char[] readData = serialPort.ReadExisting().ToCharArray();
+     scoreboardData.processInput(readData);
+     ```
+   - Do NOT use string-based methods for processing the data as they can cause:
+     - Loss of control characters (SOH, STX, EOT)
+     - Incorrect handling of binary data
+     - Timing issues with the protocol state machine
+
+2. **Check for Code Modifications**
+   - If you've modified the application code, ensure you haven't changed how serial data is processed
+   - The critical methods are SerialPort_DataReceived in Scoreboard.cs and processInput in AresDataHandler.cs
+   - If you suspect code issues, restore from a backup or reinstall the application
 
 ### Incorrect or Missing Data
 

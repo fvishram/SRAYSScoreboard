@@ -116,6 +116,11 @@ namespace SRAYSScoreboard
         /// Gets or sets whether the screen saver should exit on any key press.
         /// </summary>
         public bool ScreenSaverExitOnKeyPress { get; private set; }
+        
+        /// <summary>
+        /// Gets or sets whether the screen saver should exit on mouse movement.
+        /// </summary>
+        public bool ScreenSaverExitOnMouseMove { get; private set; }
 
         /// <summary>
         /// Gets or sets the logo path for the screen saver.
@@ -228,6 +233,10 @@ namespace SRAYSScoreboard
 
             // Set the exit on key press checkbox
             checkBoxExitOnKeyPress.Checked = ScreenSaverExitOnKeyPress;
+            
+            // Load the exit on mouse move setting
+            ScreenSaverExitOnMouseMove = Properties.Settings.Default.ScreenSaverExitOnMouseMove;
+            checkBoxExitOnMouseMove.Checked = ScreenSaverExitOnMouseMove;
 
             // Set the logo path
             textBoxLogoPath.Text = ScreenSaverLogoPath;
@@ -250,49 +259,16 @@ namespace SRAYSScoreboard
             // Get available COM ports
             string[] availablePorts = SerialPort.GetPortNames();
 
-            // Check if COM5 is in the list of available ports
-            bool com5Available = Array.Exists(availablePorts, port => port == "COM5");
-            
-            // If COM5 is not available, add it to the list as the recommended port
-            if (!com5Available)
-            {
-                // Add COM5 as the first item with a special label
-                comboBoxCOMPort.Items.Add("COM5 (Recommended for Timing System)");
-            }
-
             // Add each available port to the combo box
             foreach (string port in availablePorts)
             {
-                // If this is COM5, add it with a special label
-                if (port == "COM5")
-                {
-                    comboBoxCOMPort.Items.Add("COM5 (Recommended for Timing System)");
-                }
-                else
-                {
-                    comboBoxCOMPort.Items.Add(port);
-                }
+                comboBoxCOMPort.Items.Add(port);
             }
 
             // Select the current COM port if it exists
-            if (!string.IsNullOrEmpty(COMPort))
+            if (!string.IsNullOrEmpty(COMPort) && comboBoxCOMPort.Items.Contains(COMPort))
             {
-                // Handle the case where COMPort is "COM5" but the item is "COM5 (Recommended for Timing System)"
-                if (COMPort == "COM5")
-                {
-                    for (int i = 0; i < comboBoxCOMPort.Items.Count; i++)
-                    {
-                        if (comboBoxCOMPort.Items[i].ToString().StartsWith("COM5"))
-                        {
-                            comboBoxCOMPort.SelectedIndex = i;
-                            break;
-                        }
-                    }
-                }
-                else if (comboBoxCOMPort.Items.Contains(COMPort))
-                {
-                    comboBoxCOMPort.SelectedItem = COMPort;
-                }
+                comboBoxCOMPort.SelectedItem = COMPort;
             }
             else if (comboBoxCOMPort.Items.Count > 0)
             {
@@ -300,8 +276,15 @@ namespace SRAYSScoreboard
                 comboBoxCOMPort.SelectedIndex = 0;
             }
             
-            // Set the form title to indicate the default port
-            this.Text = "Scoreboard Settings - Default Timing System Port: COM5";
+            // Set the form title to indicate this is for COM port selection
+            this.Text = "SRAYS Scoreboard - Select COM Port for Timing System";
+            
+            // If no ports are available, show a message
+            if (availablePorts.Length == 0)
+            {
+                MessageBox.Show("No COM ports detected. Please connect your timing system and click 'Refresh Ports'.", 
+                    "No COM Ports Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
         
         /// <summary>
@@ -359,6 +342,7 @@ namespace SRAYSScoreboard
             ScreenSaverManualActivation = checkBoxManualActivation.Checked;
             ScreenSaverExitOnData = checkBoxExitOnData.Checked;
             ScreenSaverExitOnKeyPress = checkBoxExitOnKeyPress.Checked;
+            ScreenSaverExitOnMouseMove = checkBoxExitOnMouseMove.Checked;
             ScreenSaverLogoPath = textBoxLogoPath.Text;
             ScreenSaverScrollingMessage = textBoxScrollingMessage.Text;
 
@@ -367,6 +351,7 @@ namespace SRAYSScoreboard
             Properties.Settings.Default.ScreenSaverManualActivation = ScreenSaverManualActivation;
             Properties.Settings.Default.ScreenSaverExitOnData = ScreenSaverExitOnData;
             Properties.Settings.Default.ScreenSaverExitOnKeyPress = ScreenSaverExitOnKeyPress;
+            Properties.Settings.Default.ScreenSaverExitOnMouseMove = ScreenSaverExitOnMouseMove;
             Properties.Settings.Default.ScreenSaverLogoPath = ScreenSaverLogoPath;
             Properties.Settings.Default.ScreenSaverScrollingMessage = ScreenSaverScrollingMessage;
             Properties.Settings.Default.ScreenSaverBackgroundColor = ScreenSaverBackgroundColor;

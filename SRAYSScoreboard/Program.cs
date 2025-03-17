@@ -1,4 +1,4 @@
-﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
+﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -49,6 +49,94 @@ namespace SRAYSScoreboard
             // Set the default text rendering to be compatible with GDI+
             Application.SetCompatibleTextRenderingDefault(false);
             
+            // Create the settings form first
+            Settings settingsForm = new Settings();
+            settingsForm.StartPosition = FormStartPosition.CenterScreen;
+            settingsForm.Text = "SRAYS Scoreboard - Select COM Port for Timing System";
+            
+            // Create a form to host the COM port selection dialog
+            using (Form portSelectionForm = new Form())
+            {
+                portSelectionForm.Text = "Select COM Port";
+                portSelectionForm.StartPosition = FormStartPosition.CenterScreen;
+                portSelectionForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+                portSelectionForm.MaximizeBox = false;
+                portSelectionForm.MinimizeBox = false;
+                portSelectionForm.Size = new System.Drawing.Size(400, 200);
+                portSelectionForm.ShowIcon = false;
+                
+                // Create a label with instructions
+                Label instructionLabel = new Label();
+                instructionLabel.Text = "Please select the COM port for your timing system:";
+                instructionLabel.AutoSize = true;
+                instructionLabel.Location = new System.Drawing.Point(20, 20);
+                
+                // Create a ComboBox for COM port selection
+                ComboBox comPortComboBox = new ComboBox();
+                comPortComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+                comPortComboBox.Location = new System.Drawing.Point(20, 50);
+                comPortComboBox.Width = 200;
+                
+                // Populate the ComboBox with available COM ports
+                string[] availablePorts = System.IO.Ports.SerialPort.GetPortNames();
+                foreach (string port in availablePorts)
+                {
+                    comPortComboBox.Items.Add(port);
+                }
+                
+                // Select the first port if available
+                if (comPortComboBox.Items.Count > 0)
+                {
+                    comPortComboBox.SelectedIndex = 0;
+                }
+                
+                // Create a refresh button
+                Button refreshButton = new Button();
+                refreshButton.Text = "Refresh";
+                refreshButton.Location = new System.Drawing.Point(230, 50);
+                refreshButton.Click += (s, e) => {
+                    comPortComboBox.Items.Clear();
+                    string[] ports = System.IO.Ports.SerialPort.GetPortNames();
+                    foreach (string port in ports)
+                    {
+                        comPortComboBox.Items.Add(port);
+                    }
+                    if (comPortComboBox.Items.Count > 0)
+                    {
+                        comPortComboBox.SelectedIndex = 0;
+                    }
+                };
+                
+                // Create OK and Cancel buttons
+                Button okButton = new Button();
+                okButton.Text = "OK";
+                okButton.DialogResult = DialogResult.OK;
+                okButton.Location = new System.Drawing.Point(200, 100);
+                
+                Button cancelButton = new Button();
+                cancelButton.Text = "Skip";
+                cancelButton.DialogResult = DialogResult.Cancel;
+                cancelButton.Location = new System.Drawing.Point(280, 100);
+                
+                // Add controls to the form
+                portSelectionForm.Controls.Add(instructionLabel);
+                portSelectionForm.Controls.Add(comPortComboBox);
+                portSelectionForm.Controls.Add(refreshButton);
+                portSelectionForm.Controls.Add(okButton);
+                portSelectionForm.Controls.Add(cancelButton);
+                
+                // Show the form as a dialog
+                DialogResult result = portSelectionForm.ShowDialog();
+                
+                // Process the result
+                if (result == DialogResult.OK && comPortComboBox.SelectedItem != null)
+                {
+                    // Save the selected COM port
+                    Properties.Settings.Default.COMPort = comPortComboBox.SelectedItem.ToString();
+                    Properties.Settings.Default.Save();
+                }
+            }
+            
             // Create the main scoreboard form
             Scoreboard mainScoreboard = new Scoreboard();
             
@@ -66,23 +154,13 @@ namespace SRAYSScoreboard
             obsScoreboard.Size = new System.Drawing.Size(960, 540);
             obsScoreboard.TopMost = false;
             
-            // Create the settings form
-            Settings settingsForm = new Settings();
-            settingsForm.StartPosition = FormStartPosition.CenterScreen;
-            settingsForm.Text = "SRAYS Scoreboard Settings";
-            
             // Set up form references
             mainScoreboard.SetOBSScoreboard(obsScoreboard);
             mainScoreboard.SetSettingsForm(settingsForm);
             settingsForm.SetScoreboardReferences(mainScoreboard, obsScoreboard);
             
-            // Show the settings form
-            settingsForm.Show();
-            
             // Apply initial settings to the main scoreboard
             mainScoreboard.ApplySettings(settingsForm);
-            
-            // Keep the settings form visible by default
             
             // Show the OBS scoreboard window
             obsScoreboard.Show();

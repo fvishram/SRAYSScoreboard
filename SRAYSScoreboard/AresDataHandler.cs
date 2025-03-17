@@ -1,4 +1,4 @@
-﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿// Copyright (c) 2025 Faisal Vishram, Silver Rays Swim Club
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,11 +20,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace SRAYSScoreboard
 {
@@ -119,6 +117,25 @@ namespace SRAYSScoreboard
         public string RunningTime { get => runningTime; set => runningTime = value; }
         /// <summary>Gets or sets the name and number of the current event</summary>
         public string EventName { get => eventName; set => eventName = value; }
+        /// <summary>Gets the heat number from the event name</summary>
+        public string HeatNumber 
+        { 
+            get 
+            {
+                // Extract heat number from event name if available
+                if (!string.IsNullOrEmpty(eventName))
+                {
+                    // Typical format: "Event 1 Heat 2"
+                    int heatIndex = eventName.IndexOf("Heat");
+                    if (heatIndex >= 0 && heatIndex + 5 < eventName.Length)
+                    {
+                        string heatPart = eventName.Substring(heatIndex + 5);
+                        return heatPart.Trim();
+                    }
+                }
+                return "";
+            }
+        }
         /// <summary>Gets or sets the array of swimmer names for each lane</summary>
         public string[] SwimmerNames { get => swimmerNames; set => swimmerNames = value; }
         /// <summary>Gets or sets the array of finishing places for each lane</summary>
@@ -131,7 +148,7 @@ namespace SRAYSScoreboard
         /// This method implements a state machine that parses the Venus ERTD protocol.
         /// </summary>
         /// <param name="data">The character to process</param>
-        public void processInput(char data)
+        public void ProcessInput(char data)
         {
             switch (data)
             {
@@ -157,64 +174,64 @@ namespace SRAYSScoreboard
                             runningTime = transData;
                             break;
                         case LANE1_NAME_HEADER:
-                            processName(1, transData);
+                            ProcessName(1, transData);
                             break;
                         case LANE1_RESULT_HEADER:
-                            processResults(1, transData);
+                            ProcessResults(1, transData);
                             break;
                         case LANE2_NAME_HEADER:
-                            processName(2, transData);
+                            ProcessName(2, transData);
                             break;
                         case LANE2_RESULT_HEADER:
-                            processResults(2, transData);
+                            ProcessResults(2, transData);
                             break;
                         case LANE3_NAME_HEADER:
-                            processName(3, transData);
+                            ProcessName(3, transData);
                             break;
                         case LANE3_RESULT_HEADER:
-                            processResults(3, transData);
+                            ProcessResults(3, transData);
                             break;
                         case LANE4_NAME_HEADER:
-                            processName(4, transData);
+                            ProcessName(4, transData);
                             break;
                         case LANE4_RESULT_HEADER:
-                            processResults(4, transData);
+                            ProcessResults(4, transData);
                             break;
                         case LANE5_NAME_HEADER:
-                            processName(5, transData);
+                            ProcessName(5, transData);
                             break;
                         case LANE5_RESULT_HEADER:
-                            processResults(5, transData);
+                            ProcessResults(5, transData);
                             break;
                         case LANE6_NAME_HEADER:
-                            processName(6, transData);
+                            ProcessName(6, transData);
                             break;
                         case LANE6_RESULT_HEADER:
-                            processResults(6, transData);
+                            ProcessResults(6, transData);
                             break;
                         case LANE7_NAME_HEADER:
-                            processName(7, transData);
+                            ProcessName(7, transData);
                             break;
                         case LANE7_RESULT_HEADER:
-                            processResults(7, transData);
+                            ProcessResults(7, transData);
                             break;
                         case LANE8_NAME_HEADER:
-                            processName(8, transData);
+                            ProcessName(8, transData);
                             break;
                         case LANE8_RESULT_HEADER:
-                            processResults(8, transData);                                
+                            ProcessResults(8, transData);                                
                             break;
                         case LANE9_NAME_HEADER:
-                            processName(9, transData);
+                            ProcessName(9, transData);
                             break;
                         case LANE9_RESULT_HEADER:
-                            processResults(9, transData);
+                            ProcessResults(9, transData);
                             break;
                         case LANE10_NAME_HEADER:
-                            processName(10, transData);
+                            ProcessName(10, transData);
                             break;
                         case LANE10_RESULT_HEADER:
-                            processResults(10, transData);
+                            ProcessResults(10, transData);
                             break;
                         default:
                         break;
@@ -240,7 +257,7 @@ namespace SRAYSScoreboard
         /// </summary>
         /// <param name="lane">The lane number (1-10)</param>
         /// <param name="data">The swimmer name data</param>
-        private void processName(int lane, string data)
+        private void ProcessName(int lane, string data)
         {
             swimmerNames[lane-1] = data.Trim();
         }
@@ -252,7 +269,7 @@ namespace SRAYSScoreboard
         /// </summary>
         /// <param name="lane">The lane number (1-10)</param>
         /// <param name="data">The result data containing place and time information</param>
-        private void processResults(int lane, string data)
+        private void ProcessResults(int lane, string data)
         {
             string[] values = data.Trim().Split(' ');
             if (values.Length > 2)
@@ -304,12 +321,44 @@ namespace SRAYSScoreboard
         /// Processes an array of characters from the timing system.
         /// This method iterates through each character and processes it individually.
         /// </summary>
+        /// <remarks>
+        /// CRITICAL: This method must be used with char arrays directly from the serial port.
+        /// The Venus ERTD protocol used by the Omega ARES 21 timing system requires precise
+        /// character-by-character processing to correctly interpret control characters and
+        /// maintain the state machine for protocol parsing.
+        /// 
+        /// Using this method with direct char arrays ensures:
+        /// 1. Proper handling of control characters (SOH, STX, EOT)
+        /// 2. Correct state transitions in the protocol parser
+        /// 3. No data loss or corruption from string encoding/decoding
+        /// </remarks>
         /// <param name="data">Array of characters to process</param>
-        public void processInput(char[] data) 
+        public void ProcessInput(char[] data) 
         {
             foreach (char c in data)
             {
-                processInput(c);
+                ProcessInput(c);
+            }
+        }
+        
+        /// <summary>
+        /// Processes a string of data from the timing system.
+        /// This method converts the string to a character array and processes it.
+        /// </summary>
+        /// <remarks>
+        /// NOTE: While this method is provided for convenience, it is strongly recommended
+        /// to use the processInput(char[]) method directly with char arrays from the serial port.
+        /// Converting to and from strings can potentially cause issues with control characters
+        /// in the Venus ERTD protocol, especially with certain encoding/decoding operations.
+        /// 
+        /// This method should only be used for testing or when direct char array access is not possible.
+        /// </remarks>
+        /// <param name="data">String data to process</param>
+        public void ProcessData(string data)
+        {
+            if (!string.IsNullOrEmpty(data))
+            {
+                ProcessInput(data.ToCharArray());
             }
         }
     }

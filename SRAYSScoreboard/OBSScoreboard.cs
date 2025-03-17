@@ -164,6 +164,20 @@ namespace SRAYSScoreboard
         }
 
         /// <summary>
+        /// Updates the scoreboard with the provided data handler.
+        /// This method is called from the main Scoreboard form.
+        /// </summary>
+        /// <param name="dataHandler">The data handler containing the current scoreboard data</param>
+        public void UpdateScoreboard(AresDataHandler dataHandler)
+        {
+            // Update the reference to the data handler
+            scoreboardData = dataHandler;
+            
+            // Update the display
+            UpdateScoreboard();
+        }
+        
+        /// <summary>
         /// Updates all the labels with the current data from the shared data handler.
         /// </summary>
         private void UpdateScoreboard()

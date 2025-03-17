@@ -44,12 +44,53 @@ The diagram above shows the data flow between the main components of the applica
 
 1. The Omega ARES 21 timing system sends data via a serial connection using the RS-485 protocol
 2. The application receives this data through the SerialPort component
-3. The `serialPort_DataReceived` event handler is triggered when data arrives
-4. The received data is passed to the AresDataHandler for processing
-5. The AresDataHandler parses the data according to the Venus ERTD protocol
+3. The `SerialPort_DataReceived` event handler is triggered when data arrives
+4. **CRITICAL**: The received data is read as a char array and passed to the AresDataHandler's processInput method
+   ```csharp
+   char[] readData = serialPort.ReadExisting().ToCharArray();
+   scoreboardData.processInput(readData);
+   ```
+5. The AresDataHandler parses the data according to the Venus ERTD protocol using a character-by-character state machine
 6. The parsed data is stored in the AresDataHandler's properties
 7. The UI is updated to display the new data via the `SafeUpdateScoreboard` method
 8. If the OBSScoreboard is active, it also updates based on the same data
+
+### Critical Implementation Detail: Character-by-Character Processing
+
+The Venus ERTD protocol requires precise character-by-character processing to correctly interpret the binary data stream with control characters (SOH, STX, EOT). This is a critical implementation detail:
+
+```mermaid
+flowchart TD
+    A["Serial Port
+    Data Received"] -->|"Read as char[]"| B["Process Each Character
+    Individually"]
+    B -->|"SOH Character"| C["Start Header
+    Processing"]
+    B -->|"STX Character"| D["Start Data
+    Processing"]
+    B -->|"EOT Character"| E["End Transmission
+    Process Data"]
+    B -->|"Other Characters"| F["Add to Current
+    Header/Data Buffer"]
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#33f,stroke-width:2px
+    style C fill:#bfb,stroke:#3a3,stroke-width:2px
+    style D fill:#fbb,stroke:#a33,stroke-width:2px
+    style E fill:#fdb,stroke:#a63,stroke-width:2px
+    style F fill:#ddf,stroke:#55d,stroke-width:2px
+```
+
+The diagram above illustrates the state machine approach used to process the serial data. This approach is essential for correctly handling the binary protocol with control characters.
+
+**Implementation Requirements:**
+1. Serial data MUST be read as a char array, not as a string
+2. Each character must be processed individually through the state machine
+3. The exact sequence of control characters (SOH, STX, EOT) must be maintained
+4. String-based methods must be avoided as they can cause data corruption or loss due to:
+   - Character encoding issues with control characters
+   - Buffering behavior differences
+   - Timing-sensitive protocol requirements
 
 ## Class Descriptions
 

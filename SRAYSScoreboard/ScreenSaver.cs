@@ -59,6 +59,16 @@ namespace SRAYSScoreboard
         /// <summary>Flag indicating whether to exit the screen saver when a key is pressed</summary>
         private bool exitOnKeyPress = true;
         
+        /// <summary>Flag indicating whether to exit the screen saver when mouse is moved</summary>
+        private bool exitOnMouseMove = true;
+        
+        /// <summary>Logo image for logo display mode</summary>
+        private Image logoImage = null;
+        
+        /// <summary>Scrolling message text and position</summary>
+        private string scrollingMessage = "";
+        private int scrollPosition = 0;
+        
         /// <summary>
         /// Initializes a new instance of the ScreenSaver form.
         /// </summary>
@@ -170,6 +180,18 @@ namespace SRAYSScoreboard
                 currentImageIndex = (currentImageIndex + 1) % images.Count;
             }
             
+            // Update scrolling message position if in scrolling message mode
+            if (Properties.Settings.Default.ScreenSaverDisplayOption == "ScrollingMessage" && 
+                !string.IsNullOrEmpty(scrollingMessage))
+            {
+                scrollPosition += 5;
+                if (scrollPosition > this.Width)
+                {
+                    scrollPosition = -TextRenderer.MeasureText(scrollingMessage, 
+                        new Font("Arial", 48, FontStyle.Bold)).Width;
+                }
+            }
+            
             // Redraw the form
             this.Invalidate();
         }
@@ -181,16 +203,38 @@ namespace SRAYSScoreboard
         {
             base.OnPaint(e);
             
-            // Draw the current image
-            if (images.Count > 0 && currentImageIndex < images.Count)
-            {
-                e.Graphics.DrawImage(images[currentImageIndex], imagePosition);
-            }
+            // Determine which display option to use
+            string displayOption = Properties.Settings.Default.ScreenSaverDisplayOption;
             
-            // Draw the current time with a text color that contrasts with the background
-            string timeString = DateTime.Now.ToString("HH:mm:ss");
-            Brush textBrush = GetContrastingTextBrush();
-            e.Graphics.DrawString(timeString, new Font("Arial", 48, FontStyle.Bold), textBrush, new Point(this.Width / 2 - 150, this.Height / 2 - 30));
+            if (displayOption == "Logo" && logoImage != null)
+            {
+                // Draw the logo if in logo mode and the logo is loaded
+                int x = (this.Width - logoImage.Width) / 2;
+                int y = (this.Height - logoImage.Height) / 2;
+                
+                // Draw the logo
+                e.Graphics.DrawImage(logoImage, x, y);
+            }
+            else if (displayOption == "ScrollingMessage" && !string.IsNullOrEmpty(scrollingMessage))
+            {
+                // Draw scrolling message if in scrolling message mode
+                Brush textBrush = new SolidBrush(Color.White); // Or use a contrasting color
+                e.Graphics.DrawString(scrollingMessage, new Font("Arial", 48, FontStyle.Bold), 
+                    textBrush, new Point(scrollPosition, this.Height / 2 - 30));
+            }
+            else if (displayOption == "AsciiArt")
+            {
+                // Draw the current image for ASCII art mode
+                if (images.Count > 0 && currentImageIndex < images.Count)
+                {
+                    e.Graphics.DrawImage(images[currentImageIndex], imagePosition);
+                }
+                
+                // Draw the current time with a text color that contrasts with the background
+                string timeString = DateTime.Now.ToString("HH:mm:ss");
+                Brush textBrush = GetContrastingTextBrush();
+                e.Graphics.DrawString(timeString, new Font("Arial", 48, FontStyle.Bold), textBrush, new Point(this.Width / 2 - 150, this.Height / 2 - 30));
+            }
         }
         
         /// <summary>
@@ -231,7 +275,7 @@ namespace SRAYSScoreboard
         private void ScreenSaver_MouseMove(object sender, MouseEventArgs e)
         {
             // Exit the screen saver on mouse movement if configured to do so
-            if (exitOnKeyPress)
+            if (exitOnMouseMove)
             {
                 this.Close();
             }
@@ -243,7 +287,7 @@ namespace SRAYSScoreboard
         private void ScreenSaver_MouseClick(object sender, MouseEventArgs e)
         {
             // Exit the screen saver on mouse click if configured to do so
-            if (exitOnKeyPress)
+            if (exitOnMouseMove)
             {
                 this.Close();
             }
@@ -260,11 +304,41 @@ namespace SRAYSScoreboard
             // Load the exit on key press setting
             exitOnKeyPress = Properties.Settings.Default.ScreenSaverExitOnKeyPress;
             
+            // Load the exit on mouse move setting
+            exitOnMouseMove = Properties.Settings.Default.ScreenSaverExitOnMouseMove;
+            
             // Load the background color setting
             if (Properties.Settings.Default.ScreenSaverBackgroundColor != Color.Empty)
             {
                 this.BackColor = Properties.Settings.Default.ScreenSaverBackgroundColor;
             }
+            
+            // Load logo if in logo mode
+            if (Properties.Settings.Default.ScreenSaverDisplayOption == "Logo" && 
+                !string.IsNullOrEmpty(Properties.Settings.Default.ScreenSaverLogoPath) &&
+                System.IO.File.Exists(Properties.Settings.Default.ScreenSaverLogoPath))
+            {
+                try
+                {
+                    // Dispose of any existing logo image
+                    if (logoImage != null)
+                    {
+                        logoImage.Dispose();
+                        logoImage = null;
+                    }
+                    
+                    // Load the new logo image
+                    logoImage = Image.FromFile(Properties.Settings.Default.ScreenSaverLogoPath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error loading logo image: {ex.Message}");
+                }
+            }
+            
+            // Load scrolling message
+            scrollingMessage = Properties.Settings.Default.ScreenSaverScrollingMessage;
+            scrollPosition = 0;
         }
         
         /// <summary>
@@ -293,28 +367,13 @@ namespace SRAYSScoreboard
                 image.Dispose();
             }
             images.Clear();
-        }
-        
-        /// <summary>
-        /// Initializes the form components.
-        /// </summary>
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // ScreenSaver
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "ScreenSaver";
-            this.Text = "Screen Saver";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Load += new System.EventHandler(this.ScreenSaver_Load);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ScreenSaver_FormClosed);
-            this.ResumeLayout(false);
+            
+            // Dispose of the logo image
+            if (logoImage != null)
+            {
+                logoImage.Dispose();
+                logoImage = null;
+            }
         }
     }
 }

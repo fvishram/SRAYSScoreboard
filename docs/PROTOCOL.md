@@ -155,10 +155,32 @@ The application recognizes the following header codes:
 
 ## Data Processing Flow
 
-1. The application reads data from the serial port character by character
+1. The application reads data from the serial port character by character as a char array
 2. It maintains state variables to track whether it's currently processing a header or data section
 3. When a complete message is received (after an EOT character), it processes the data based on the header code
 4. The processed data is stored in the `AresDataHandler` class and used to update the display
+
+### CRITICAL: Character-by-Character Processing
+
+The Venus ERTD protocol requires precise character-by-character processing to correctly interpret the binary data stream. This is why the application must:
+
+1. Read data from the serial port as a char array, not as a string
+2. Process each character individually through the state machine
+3. Maintain the exact sequence of control characters (SOH, STX, EOT)
+
+```csharp
+// CORRECT implementation - Reading as char array
+SerialPort sp = (SerialPort)sender;
+char[] readData = sp.ReadExisting().ToCharArray();
+scoreboardData.processInput(readData);
+```
+
+Using string-based methods instead of char arrays can cause data corruption or loss due to:
+- Character encoding issues with control characters in the protocol
+- Buffering behavior differences between string and char array processing
+- Timing-sensitive protocol requirements that need immediate character processing
+
+For more implementation details, see the `SerialPort_DataReceived` method in `Scoreboard.cs` and the `processInput` methods in `AresDataHandler.cs`.
 
 ## Example Data Packets
 
